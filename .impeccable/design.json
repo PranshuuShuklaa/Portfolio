@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-23T13:48:45.480Z",
+  "title": "Design System: Pranshu Shukla Portfolio",
+  "extensions": {
+    "colorMeta": {
+      "page": {
+        "role": "neutral",
+        "displayName": "Charcoal"
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Terminal Surface"
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Warm White"
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Paper"
+      },
+      "signal": {
+        "role": "primary",
+        "displayName": "Signal Blue"
+      },
+      "signal-strong": {
+        "role": "primary",
+        "displayName": "Blue on Paper"
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display Name"
+      },
+      "console": {
+        "displayName": "Terminal Commands"
+      }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "cursor-approach",
+        "value": "245–310ms",
+        "purpose": "Carries an arrow to its starting mark."
+      },
+      {
+        "name": "cursor-write",
+        "value": "245–470ms",
+        "purpose": "Reveals text behind the moving arrow."
+      },
+      {
+        "name": "cursor-drag",
+        "value": "540ms",
+        "purpose": "Pulls open the terminal and project frames."
+      },
+      {
+        "name": "cursor-departure",
+        "value": "190ms",
+        "purpose": "Clears the cursor after placement."
+      },
+      {
+        "name": "pull-ease",
+        "value": "cubic-bezier(.55, .08, .26, 1)",
+        "purpose": "Keeps the pointer, guide, and pulled edge aligned."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "tight-desktop",
+        "value": "52rem"
+      },
+      {
+        "name": "stacked",
+        "value": "41rem"
+      },
+      {
+        "name": "two-row-header",
+        "value": "27rem"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Action",
+      "kind": "button",
+      "refersTo": "action",
+      "description": "Jumps to the selected work.",
+      "html": "<a class=\"ds-action\" href=\"#work\">Explore my work</a>",
+      "css": ".ds-action { display:inline-flex; align-items:center; min-height:2.95rem; padding:.55rem .92rem; background:#f0eee8; color:#18191b; text-decoration:none; font-weight:630; } .ds-action:hover { background:#aebaff; }"
+    },
+    {
+      "name": "Project Link",
+      "kind": "link",
+      "refersTo": "text-link",
+      "description": "Opens a live project.",
+      "html": "<a class=\"ds-project-link\" href=\"https://klovekicks.in/\">Visit live store</a>",
+      "css": ".ds-project-link { color:#aebaff; text-underline-offset:.25em; font-weight:540; } .ds-project-link:hover { color:#f0eee8; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Build the page with cursor arrows",
+    "overview": "Cursor arrows assemble the interface from the header through the contact section. They draw guides through text, place links with a click, and pull open the terminal and project images.",
+    "keyCharacteristics": [
+      "Charcoal and warm white, with a blue signal.",
+      "A working terminal alongside the display name.",
+      "Repeated cursor assembly with native scrolling and a static fallback."
+    ],
+    "rules": [],
+    "dos": [],
+    "donts": []
+  }
+}
