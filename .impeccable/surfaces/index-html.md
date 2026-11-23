@@ -5,24 +5,24 @@ primary_target: "index.html"
 related_targets:
   - "styles.css"
   - "intro.js"
+  - "showcase.js"
+  - "orbit.js"
 ---
 
 # Portfolio homepage
 
-People following Pranshu’s profiles can browse real projects and find his experience, education, and contact links.
+Visitors can explore three real projects, find information about Pranshu, and reach him directly.
 
 ## Direction contract
 
-**Thesis.** Cursor arrows visibly assemble the page as visitors open it and scroll.
+**Thesis.** Let a portfolio terminal, authored typographic layout, and cursor assembly put the work first.
 
-**Own-world.** Matte charcoal, warm white type, a paper-colored profile, and blue cursor guides. Switzer carries the typography. Monospace is reserved for terminal controls and date information.
+**First viewport.** A large name on paper, a working terminal, and a single subtle orbital form that follows the pointer. The project visuals start in Selected Work.
 
-**Story.** Meet Pranshu, try the terminal, see Klove Kicks and Infinity, then find a short Stipple entry, experience, education, and contact.
+**Work.** Klove Kicks and Infinity get one screenshot each. Stipple gets one video.
 
-**First viewport.** A two-line name with the approved tagline on the left, a working portfolio terminal on the right, and the selected-work heading below.
+**Motion.** Replay the cursor build after a section leaves the viewport and returns. Use a distinct scroll-bound zoom and flat color wipe at Selected Work. Keep every action usable and support system reduced motion.
 
-**Form.** The requested terminal-inspired redesign uses shared Anime.js v4 timelines with text writing, clicks, and paired corner drags. The screen recording informed the cursor guides and pacing. The CodePen easing visualizer informed the approach and landing curves.
+**References.** [Louis Paquet](https://louispaquet.com/) and [Abdulkader Safi](https://abdulkadersafi.com/blog/i-redesigned-my-portfolio-from-tech-dashboard-to-editorial) informed the work-index structure. [Adrien Quéchon](https://www.adrienquechon.com/) informed the serif and single-form art direction. [SLX Management](https://slxmanagement.com/fr) informed the orbital response, and [Goutam’s portfolio](https://portfolio-delta-five-luvcxne6a5.vercel.app/) informed the chapter transition. Cursor timing takes cues from the [Anime.js v4 easing visualizer](https://codepen.io/juliangarnier/pen/gbOqbVR). The implementation uses original shapes and code.
 
-**Finish.** The opening and scroll builds remain interruptible and can be replayed. Verify desktop, tablet, phone, reduced motion, and the static fallback.
-
-Animation references are the [Anime.js v4 easings visualizer](https://codepen.io/juliangarnier/pen/gbOqbVR) and [Anime.js scroll-bound stroke demo](https://codepen.io/HejChristian/pen/LEYvbWP). The portfolio uses its own motion sequences.
+**Finish.** Check both scroll directions, chapter scrubbing, terminal commands, project media, contact links, and responsive layouts. Check reduced motion and the static fallback.

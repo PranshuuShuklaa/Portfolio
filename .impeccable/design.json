@@ -1,110 +1,87 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-23T13:48:45.480Z",
+  "generatedAt": "2026-11-23T14:37:34.180Z",
   "title": "Design System: Pranshu Shukla Portfolio",
   "extensions": {
     "colorMeta": {
-      "page": {
-        "role": "neutral",
-        "displayName": "Charcoal"
-      },
-      "surface": {
-        "role": "neutral",
-        "displayName": "Terminal Surface"
-      },
-      "ink": {
-        "role": "neutral",
-        "displayName": "Warm White"
-      },
       "paper": {
         "role": "neutral",
         "displayName": "Paper"
       },
-      "signal": {
-        "role": "primary",
-        "displayName": "Signal Blue"
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink"
       },
-      "signal-strong": {
+      "pine": {
         "role": "primary",
-        "displayName": "Blue on Paper"
+        "displayName": "Forest"
+      },
+      "wine": {
+        "role": "primary",
+        "displayName": "Burgundy"
       }
     },
     "typographyMeta": {
       "display": {
-        "displayName": "Display Name"
+        "displayName": "Baskervville"
       },
-      "console": {
-        "displayName": "Terminal Commands"
+      "body": {
+        "displayName": "Switzer"
+      },
+      "terminal": {
+        "displayName": "Terminal prompt"
       }
     },
     "shadows": [],
     "motion": [
       {
-        "name": "cursor-approach",
-        "value": "245–310ms",
-        "purpose": "Carries an arrow to its starting mark."
-      },
-      {
-        "name": "cursor-write",
-        "value": "245–470ms",
-        "purpose": "Reveals text behind the moving arrow."
-      },
-      {
         "name": "cursor-drag",
         "value": "540ms",
-        "purpose": "Pulls open the terminal and project frames."
+        "purpose": "Four cursors pull open a project figure."
       },
       {
-        "name": "cursor-departure",
-        "value": "190ms",
-        "purpose": "Clears the cursor after placement."
+        "name": "work-zoom",
+        "value": "1.58× to 1×",
+        "purpose": "Scroll position drives the work title zoom and flat color wipe."
       },
       {
-        "name": "pull-ease",
-        "value": "cubic-bezier(.55, .08, .26, 1)",
-        "purpose": "Keeps the pointer, guide, and pulled edge aligned."
+        "name": "orbit-redraw",
+        "value": "30ms minimum",
+        "purpose": "Bounds the interactive canvas refresh rate."
       }
     ],
     "breakpoints": [
       {
-        "name": "tight-desktop",
-        "value": "52rem"
+        "name": "tight desktop",
+        "value": "55rem"
       },
       {
-        "name": "stacked",
-        "value": "41rem"
+        "name": "single column",
+        "value": "42rem"
       },
       {
-        "name": "two-row-header",
-        "value": "27rem"
+        "name": "compact navigation",
+        "value": "26rem"
       }
     ]
   },
   "components": [
     {
-      "name": "Primary Action",
+      "name": "Explore work",
       "kind": "button",
       "refersTo": "action",
-      "description": "Jumps to the selected work.",
+      "description": "Opens the project index.",
       "html": "<a class=\"ds-action\" href=\"#work\">Explore my work</a>",
-      "css": ".ds-action { display:inline-flex; align-items:center; min-height:2.95rem; padding:.55rem .92rem; background:#f0eee8; color:#18191b; text-decoration:none; font-weight:630; } .ds-action:hover { background:#aebaff; }"
-    },
-    {
-      "name": "Project Link",
-      "kind": "link",
-      "refersTo": "text-link",
-      "description": "Opens a live project.",
-      "html": "<a class=\"ds-project-link\" href=\"https://klovekicks.in/\">Visit live store</a>",
-      "css": ".ds-project-link { color:#aebaff; text-underline-offset:.25em; font-weight:540; } .ds-project-link:hover { color:#f0eee8; }"
+      "css": ".ds-action { display:inline-flex; align-items:center; min-height:2.95rem; padding:.45rem .9rem; background:#203b31; color:#faf6e8; font-weight:550; text-decoration:none; }"
     }
   ],
   "narrative": {
-    "northStar": "Build the page with cursor arrows",
-    "overview": "Cursor arrows assemble the interface from the header through the contact section. They draw guides through text, place links with a click, and pull open the terminal and project images.",
+    "northStar": "An index the visitor can operate",
+    "overview": "The opening pairs editorial type with a functional terminal. Visitors can follow one visual per project as the cursor crew assembles the page.",
     "keyCharacteristics": [
-      "Charcoal and warm white, with a blue signal.",
-      "A working terminal alongside the display name.",
-      "Repeated cursor assembly with native scrolling and a static fallback."
+      "Paper, forest green, and burgundy.",
+      "A single reactive orbital drawing.",
+      "A reversible chapter transition and cursor replay on viewport re-entry."
     ],
     "rules": [],
     "dos": [],

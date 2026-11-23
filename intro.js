@@ -1,23 +1,16 @@
 (() => {
-  const form = document.querySelector("[data-console-form]");
-  const output = document.querySelector("[data-console-output]");
-  const input = document.querySelector("#command-input");
-  const toggle = document.querySelector("[data-motion-toggle]");
-  const replayButtons = [...document.querySelectorAll("[data-replay]")];
-  const heading = document.querySelector("#name");
   const header = document.querySelector(".topbar");
   const pointerTemplate = document.querySelector("#cursor-template");
   const sections = [...document.querySelectorAll(".site-nav a")].map(link => ({
     link, target: document.querySelector(link.hash)
   }));
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const compact = window.matchMedia("(max-width: 41rem)");
+  const compact = window.matchMedia("(max-width: 42rem)");
   const { createTimeline, cubicBezier } = window.anime ?? {};
   const supported = Boolean(createTimeline && cubicBezier && pointerTemplate);
   const landing = supported ? cubicBezier(.2, .78, .25, 1) : "linear";
   const travelY = supported ? cubicBezier(.42, .08, .34, 1) : "linear";
   const pulling = supported ? cubicBezier(.55, .08, .26, 1) : "linear";
-  const preferenceKey = "pranshu-build-motion";
   const scenes = [...document.querySelectorAll("[data-build]")].map(element => ({
     element,
     parts: [...element.querySelectorAll("[data-build-part]")],
@@ -25,17 +18,13 @@
     timeline: null,
     overlay: null
   }));
-  let enabled = readMotionPreference();
   let queued = false;
   let layoutWidth = document.documentElement.clientWidth;
-
-  function readMotionPreference() {
-    try { return sessionStorage.getItem(preferenceKey) !== "off"; }
-    catch { return true; }
-  }
+  let lastScroll = window.scrollY;
+  let direction = 1;
 
   function canPlay() {
-    return supported && enabled && !reduced.matches;
+    return supported && !reduced.matches;
   }
 
   function finish(scene) {
@@ -52,54 +41,16 @@
     scenes.forEach(finish);
   }
 
+  function arm(scene) {
+    if (scene.state === "running") finish(scene);
+    scene.state = "pending";
+    scene.element.dataset.buildState = "pending";
+  }
+
   function resetBuild() {
     settleAll();
-    if (canPlay()) {
-      for (const scene of scenes) {
-        scene.state = "pending";
-        scene.element.dataset.buildState = "pending";
-      }
-    }
+    if (canPlay()) scenes.forEach(arm);
     schedule();
-  }
-
-  function updateControls() {
-    toggle.hidden = !supported || reduced.matches;
-    toggle.setAttribute("aria-pressed", String(canPlay()));
-    toggle.textContent = canPlay() ? "Motion on" : "Motion off";
-    replayButtons.forEach(button => { button.hidden = !canPlay(); });
-    document.documentElement.toggleAttribute("data-motion-off", !canPlay());
-    if (!canPlay()) settleAll();
-  }
-
-  function toggleMotion() {
-    if (!supported || reduced.matches) return;
-    enabled = !enabled;
-    try { sessionStorage.setItem(preferenceKey, enabled ? "on" : "off"); }
-    catch { /* The control also works without storage. */ }
-    updateControls();
-    if (enabled) {
-      const top = header.getBoundingClientRect().bottom;
-      for (const scene of scenes) {
-        if (scene.element.getBoundingClientRect().top > Math.max(top, window.innerHeight)) {
-          scene.state = "pending";
-          scene.element.dataset.buildState = "pending";
-        }
-      }
-      schedule();
-    }
-  }
-
-  function replayBuild() {
-    if (!canPlay()) return;
-    if (window.location.hash) {
-      const url = new URL(window.location.href);
-      url.hash = "";
-      history.replaceState(history.state, "", url);
-    }
-    window.scrollTo({ top: 0, behavior: "instant" });
-    heading.focus({ preventScroll: true });
-    resetBuild();
   }
 
   function updateLocation(top) {
@@ -121,22 +72,39 @@
     queued = false;
     const top = Math.max(0, header.getBoundingClientRect().bottom);
     const bottom = window.innerHeight;
+    if (window.scrollY !== lastScroll) direction = window.scrollY > lastScroll ? 1 : -1;
+    lastScroll = window.scrollY;
     updateLocation(top);
     if (!canPlay()) return;
 
-    const visible = scenes.filter(scene => scene.state !== "built").map(scene => ({
+    const positions = scenes.map(scene => ({
       scene, rect: scene.element.getBoundingClientRect()
     }));
-    for (const { scene, rect } of visible) {
+    let started = false;
+    let hasMore = false;
+    for (const { scene, rect } of positions) {
       const isHeader = scene.element.dataset.build === "header";
-      if (!isHeader && rect.bottom <= top) {
-        finish(scene);
-      } else if (!isHeader && scene.state === "running" && rect.top >= bottom) {
-        finish(scene);
-      } else if (scene.state === "pending" && (isHeader || rect.top < bottom * .96)) {
-        play(scene, rect);
+      const hasFocus = scene.element.contains(document.activeElement) && document.activeElement.matches(":focus-visible");
+      const outside = rect.bottom < top - 46 || rect.top > bottom + 46;
+      const enters = rect.bottom > top + Math.min(20, rect.height * .2) &&
+        rect.top < bottom - Math.min(20, rect.height * .2);
+
+      if (!isHeader && outside && !hasFocus) {
+        if (scene.state !== "pending") arm(scene);
+      } else if (scene.state === "pending" && (isHeader || enters)) {
+        if (hasFocus) {
+          finish(scene);
+          continue;
+        }
+        if (started) {
+          hasMore = true;
+        } else {
+          play(scene, rect, direction);
+          started = true;
+        }
       }
     }
+    if (hasMore) schedule();
   }
 
   function schedule() {
@@ -199,9 +167,9 @@
     }, time);
   }
 
-  function selection(overlay, box) {
+  function selection(overlay, box, className = "build-selection") {
     const outline = document.createElement("span");
-    outline.className = "build-selection";
+    outline.className = className;
     place(outline, box.left, box.top);
     outline.style.width = `${box.width}px`;
     outline.style.height = `${box.height}px`;
@@ -209,11 +177,11 @@
     return outline;
   }
 
-  function write(timeline, overlay, element, box, time, index) {
+  function write(timeline, overlay, element, box, time, index, crew, direction) {
     const cursor = pointer(overlay, index % 2 === 1);
     const first = point(box, 0, 1);
     const last = point(box, 1, 1);
-    const start = { x: first.x - (compact.matches ? 35 : 73), y: first.y + 28 };
+    const start = { x: first.x - (compact.matches ? 35 : 73), y: first.y + 28 * direction };
     const contact = time + 245;
     const draw = Math.min(470, 245 + box.width * .31);
     const guide = selection(overlay, { ...box, top: first.y + 1, height: 1 });
@@ -235,10 +203,10 @@
     depart(timeline, cursor, last, 1, contact + draw);
   }
 
-  function drop(timeline, overlay, element, box, time, index) {
+  function drop(timeline, overlay, element, box, time, index, crew, direction) {
     const cursor = pointer(overlay, index % 2 === 1);
     const spot = point(box, compact.matches ? .72 : .85, .56);
-    const start = { x: spot.x + 66, y: spot.y + 53 };
+    const start = { x: spot.x + 66, y: spot.y + 53 * direction };
     const contact = time + 290;
     approach(timeline, cursor, start, spot, time, 290);
     ripple(timeline, overlay, spot, contact);
@@ -247,22 +215,32 @@
     depart(timeline, cursor, spot, 1, contact + 145);
   }
 
-  function drag(timeline, overlay, element, box, time) {
-    const first = pointer(overlay);
-    const second = pointer(overlay, true);
-    const grabFirst = point(box, .43, .38);
-    const grabSecond = point(box, .57, .62);
-    const cornerFirst = point(box, 0, 0);
-    const cornerSecond = point(box, 1, 1);
+  function drag(timeline, overlay, element, box, time, index, crew) {
     const opening = time + 310;
     const duration = 540;
     const release = opening + duration;
     const outline = selection(overlay, box);
+    const corners = crew ? [[0, 0], [1, 1], [1, 0], [0, 1]] : [[0, 0], [1, 1]];
 
-    approach(timeline, first, { x: box.left - 55, y: grabFirst.y - 54 }, grabFirst, time, 310);
-    approach(timeline, second, { x: box.left + box.width + 54, y: grabSecond.y + 48 }, grabSecond, time + 34, 276);
-    ripple(timeline, overlay, grabFirst, opening);
-    ripple(timeline, overlay, grabSecond, opening);
+    if (crew) {
+      const footprint = selection(overlay, box, "build-footprint");
+      timeline.call(() => footprint.classList.add("is-present"), time);
+      timeline.add(footprint, { opacity: [0, .38], duration: 145, ease: landing }, time);
+      timeline.add(footprint, { opacity: [.38, 0], duration: duration + 120, ease: pulling }, opening);
+    }
+
+    corners.forEach(([x, y], cornerIndex) => {
+      const cursor = pointer(overlay, (index + cornerIndex) % 2 === 1);
+      const grab = point(box, x ? .57 : .43, y ? .62 : .38);
+      const corner = point(box, x, y);
+      const start = { x: corner.x + (x ? 92 : -92), y: corner.y + (y ? 75 : -75) };
+      const delay = cornerIndex * 29;
+      approach(timeline, cursor, start, grab, time + delay, 310 - delay);
+      ripple(timeline, overlay, grab, opening);
+      chase(timeline, cursor, grab, corner, opening, duration);
+      depart(timeline, cursor, corner, x ? 1 : -1, release);
+    });
+
     timeline.call(() => outline.classList.add("is-present"), opening);
     timeline.add(element, {
       opacity: { from: .65, to: 1, duration: 185 },
@@ -276,15 +254,11 @@
       duration, ease: pulling
     }, opening);
     timeline.add(outline, { opacity: [.64, 0], duration: 160 }, release);
-    chase(timeline, first, grabFirst, cornerFirst, opening, duration);
-    chase(timeline, second, grabSecond, cornerSecond, opening, duration);
-    depart(timeline, first, cornerFirst, -1, release);
-    depart(timeline, second, cornerSecond, 1, release);
   }
 
   const moves = { write, drop, drag };
 
-  function play(scene, sceneRect) {
+  function play(scene, sceneRect, direction) {
     const overlay = document.createElement("div");
     overlay.className = "build-overlay";
     overlay.setAttribute("aria-hidden", "true");
@@ -308,10 +282,14 @@
         }
       });
       scene.timeline = timeline;
-      const gap = compact.matches ? 110 : 130;
-      const delay = scene.element.dataset.build === "hero" ? 85 : 0;
-      geometry.forEach(({ element, box }, index) => {
-        moves[element.dataset.buildPart](timeline, overlay, element, box, delay + index * gap, index);
+      const gap = compact.matches ? 82 : 110;
+      const delay = scene.element.dataset.build === "hero" ? 65 : 0;
+      const crew = scene.element.hasAttribute("data-crew");
+      const sequence = crew
+        ? geometry.slice().sort((a, b) => Number(b.element.dataset.buildPart === "drag") - Number(a.element.dataset.buildPart === "drag"))
+        : geometry;
+      sequence.forEach(({ element, box }, index) => {
+        moves[element.dataset.buildPart](timeline, overlay, element, box, delay + index * gap, index, crew, direction);
       });
       timeline.play();
     } catch (error) {
@@ -320,53 +298,10 @@
     }
   }
 
-  function log(command, message) {
-    const example = document.createElement("p");
-    example.textContent = `$ ${command}`;
-    const result = document.createElement("p");
-    result.className = "terminal-result";
-    result.textContent = message;
-    output.append(example, result);
-    while (output.children.length > 12) output.firstChild.remove();
-    output.scrollTop = output.scrollHeight;
-  }
-
-  const destinations = new Map([
-    ["work", "Selected work"],
-    ["about", "About me"],
-    ["experience", "Experience"],
-    ["education", "Education"],
-    ["contact", "Get in touch"]
-  ]);
-
-  form.hidden = false;
-  form.addEventListener("submit", event => {
-    event.preventDefault();
-    const value = input.value.trim().toLowerCase().replace(/^cd\s+/, "");
-    input.value = "";
-    if (!value) return;
-
-    if (destinations.has(value)) {
-      log(value, `Opening ${destinations.get(value)}.`);
-      window.location.hash = value;
-    } else if (value === "help" || value === "ls") {
-      log(value, "work · about · experience · education · contact · replay · motion · clear");
-    } else if (value === "clear") {
-      output.replaceChildren();
-    } else if (value === "motion") {
-      toggleMotion();
-      log(value, canPlay() ? "Cursor motion enabled." : "Cursor motion is off.");
-    } else if (value === "replay") {
-      log(value, canPlay() ? "Replaying the page build." : "Cursor motion is off.");
-      replayBuild();
-    } else {
-      log(value, "Unknown command. Try help.");
-    }
+  reduced.addEventListener("change", () => {
+    if (reduced.matches) settleAll();
+    else resetBuild();
   });
-
-  toggle.addEventListener("click", toggleMotion);
-  replayButtons.forEach(button => button.addEventListener("click", replayBuild));
-  reduced.addEventListener("change", updateControls);
   window.addEventListener("scroll", schedule, { passive: true });
   window.addEventListener("resize", () => {
     const width = document.documentElement.clientWidth;
@@ -392,6 +327,5 @@
     else schedule();
   });
 
-  updateControls();
   resetBuild();
 })();

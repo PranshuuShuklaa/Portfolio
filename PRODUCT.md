@@ -8,21 +8,21 @@ web
 
 ## Stack
 
-Static HTML, CSS, and JavaScript, with a local Anime.js 4.5.0 bundle. The portfolio supports a direct local preview.
+Static HTML, CSS, and JavaScript. Animation uses a local Anime.js 4.5.0 bundle and a Canvas 2D background.
 
 ## Purpose
 
-Give people who find Pranshu online a quick way to explore his live work. Cursor arrows assemble the whole page, and the portfolio terminal gives visitors another way to navigate.
+Give visitors from Pranshu’s social profiles a way to explore his projects, learn about his experience, and get in touch.
 
 ## Content
 
-- The opening introduces Pranshu Shukla with “I build for the web.”
-- Stipple gets a short entry with a link to its public GitHub visualization tool.
-- Klove Kicks is a live sneaker storefront. Pranshu built the frontend and backend end to end.
-- Infinity is a tech society site demo.
-- Pranshu is a Computer Science student at Shaheed Sukhdev College of Business Studies, an intern at Fault Labs AI, and a hackCBS 9.0 volunteer. His public LinkedIn preview lists Kronos and the SSCBS program.
-- GitHub and LinkedIn are the contact destinations.
+- The opening introduces Pranshu Shukla with “I build for the web” and a terminal for exploring the site.
+- Klove Kicks is a live sneaker storefront built by Pranshu end to end. It has one screenshot.
+- Stipple visualizes public GitHub repositories. It has one walkthrough of its Express report.
+- Infinity is a tech society website demo. It has one screenshot.
+- About and Activity cover SSCBS, Fault Labs AI, Kronos, Smart India Hackathon, Sanket, and hackCBS 9.0.
+- Contact includes email, Instagram, LinkedIn, and GitHub.
 
 ## Brand commitments
 
-The site uses charcoal, paper, and blue accents. Cursor arrows visibly place the interface on opening and while scrolling. The assembled page supports reduced motion, ordinary scrolling, and keyboard navigation.
+Use paper, forest green, and muted burgundy. Keep project assembly visible in both directions of scroll. The intro uses an original orbital drawing, and the work intro uses a scroll-controlled zoom and flat color wipe. The page supports reduced motion and works with ordinary navigation.

@@ -1,1 +1,41 @@
+# Local settings and credentials
+.env
+.env.*
+!.env.example
+!.env.*.example
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+.npmrc
+*.pem
+*.key
+*.p12
+*.pfx
+*.keystore
+/.secrets/
+/secrets/
+/credentials/
+/private/
+
+# Local development and generated output
+/node_modules/
+/dist/
+/.vercel/
+/.vscode/
+/.idea/
+/.local/
+/.scratch/
+/tmp/
+*.log
+*.local
+*.local.*
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Local design previews and review artifacts
 /.impeccable/review/
+/.impeccable/mocks/
+/.impeccable/live/
+/.impeccable/build/
+/.impeccable/config.local.json
