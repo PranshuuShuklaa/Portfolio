@@ -15,10 +15,12 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="companion.css">
     <script src="vendor/anime-4.5.0.min.js" defer></script>
-    <script src="intro.js" defer></script>
     <script src="showcase.js" defer></script>
     <script src="circuit.js" defer></script>
     <script src="companion.js" defer></script>
+    <script src="intro.js" defer></script>
+    <script src="bit-tour.js" defer></script>
+    <script src="ui-enhancements.js" defer></script>
   </head>
   <body id="top">
     <a class="skip-link" href="#main">Skip to content</a>
@@ -26,6 +28,7 @@
       <div class="topbar-inner frame" data-build="header">
         <a class="wordmark" href="#top" aria-label="Pranshu Shukla, home" data-build-part="write">PS<span>.</span></a>
         <nav class="site-nav" aria-label="Main navigation" data-build-part="write">
+          <span class="site-nav-highlight" data-nav-highlight aria-hidden="true"></span>
           <a href="#work">Work</a>
           <a href="#about">About</a>
           <a href="#activity">Activity</a>
@@ -55,7 +58,7 @@
           <section class="terminal" aria-labelledby="terminal-title" data-build-part="drag" data-ui>
             <div class="terminal-bar">
               <h2 id="terminal-title">Portfolio index</h2>
-              <code>~/pranshu</code>
+              <button class="quick-jump-trigger" type="button" data-quick-open aria-haspopup="dialog" aria-controls="quick-jump" aria-keyshortcuts="Control+K Meta+K" hidden>Quick jump <kbd aria-hidden="true"></kbd></button>
             </div>
             <div class="terminal-body">
               <div class="terminal-log" data-terminal-log role="log" aria-live="polite">
@@ -99,10 +102,17 @@
               <h3 data-build-part="write">Klove Kicks</h3>
               <p class="project-type" data-build-part="write">Full-stack e-commerce</p>
               <p data-build-part="write">I built the entire online store for a Delhi sneaker boutique, from the storefront and product catalog to the backend.</p>
-              <div class="link-group" data-build-part="drop"><a class="text-link" href="https://klovekicks.in/">Visit live store</a></div>
+              <div class="link-group" data-build-part="drop"><a class="text-link" href="https://klovekicks.in/" target="_blank" rel="noopener noreferrer" data-tour-link>Visit live store</a></div>
+              <details class="project-notes" data-build-part="drop">
+                <summary>What I built</summary>
+                <dl>
+                  <div><dt>Storefront</dt><dd>Collection pages and a catalog for browsing sneakers by brand.</dd></div>
+                  <div><dt>Backend</dt><dd>I built the systems that power the storefront and its product catalog.</dd></div>
+                </dl>
+              </details>
             </div>
             <figure class="project-figure" data-build-part="drag">
-              <a class="project-media" href="https://klovekicks.in/" aria-label="Visit the Klove Kicks store">
+              <a class="project-media" href="https://klovekicks.in/" target="_blank" rel="noopener noreferrer" aria-label="Visit the Klove Kicks store">
                 <img src="assets/klovekicks.webp" alt="The Klove Kicks sneaker storefront with a blue collection banner" width="1280" height="850" loading="lazy" decoding="async">
               </a>
               <figcaption>Live storefront</figcaption>
@@ -116,9 +126,16 @@
               <p class="project-type" data-build-part="write">Interactive data visualization</p>
               <p data-build-part="write">A visual explorer for public GitHub repos. Each dot represents a file, and you can browse a repo by language, activity, and folder.</p>
               <div class="link-group" data-build-part="drop">
-                <a class="text-link" href="https://stipple-lilac.vercel.app/">Try Stipple</a>
-                <a class="text-link" href="https://github.com/PranshuuShuklaa/Stipple">Source code</a>
+                <a class="text-link" href="https://stipple-lilac.vercel.app/" target="_blank" rel="noopener noreferrer" data-tour-link>Try Stipple</a>
+                <a class="text-link" href="https://github.com/PranshuuShuklaa/Stipple" target="_blank" rel="noopener noreferrer">Source code</a>
               </div>
+              <details class="project-notes" data-build-part="drop">
+                <summary>How the dots work</summary>
+                <dl>
+                  <div><dt>Rendering</dt><dd>A Canvas 2D engine groups files into dots on large repositories to keep the map responsive.</dd></div>
+                  <div><dt>Sharing</dt><dd>Reports have their own links, plus badges and cards you can embed in a README.</dd></div>
+                </dl>
+              </details>
             </div>
             <figure class="project-figure" data-build-part="drag">
               <video class="project-media project-film" controls playsinline preload="none" poster="assets/stipple-feature.webp" aria-label="Stipple walkthrough showing the Express repository">
@@ -135,12 +152,19 @@
               <p class="project-type" data-build-part="write">Tech society website demo</p>
               <p data-build-part="write">A website demo for the Sri Guru Gobind Singh College of Commerce tech society, with a scroll-led intro and sections for events and the team.</p>
               <div class="link-group" data-build-part="drop">
-                <a class="text-link" href="https://sggscc-infinity.vercel.app/">View demo</a>
-                <a class="text-link" href="https://github.com/PranshuuShuklaa/Society-Portal-AI-Cognition">Source code</a>
+                <a class="text-link" href="https://sggscc-infinity.vercel.app/" target="_blank" rel="noopener noreferrer" data-tour-link>View demo</a>
+                <a class="text-link" href="https://github.com/PranshuuShuklaa/Society-Portal-AI-Cognition" target="_blank" rel="noopener noreferrer">Source code</a>
               </div>
+              <details class="project-notes" data-build-part="drop">
+                <summary>Inside the demo</summary>
+                <dl>
+                  <div><dt>Events</dt><dd>Category filters and a season timeline organize the demo events.</dd></div>
+                  <div><dt>Team</dt><dd>Badge-style profiles show how the society could present its members and departments.</dd></div>
+                </dl>
+              </details>
             </div>
             <figure class="project-figure" data-build-part="drag">
-              <a class="project-media" href="https://sggscc-infinity.vercel.app/" aria-label="Open the Infinity website demo">
+              <a class="project-media" href="https://sggscc-infinity.vercel.app/" target="_blank" rel="noopener noreferrer" aria-label="Open the Infinity website demo">
                 <img src="assets/infinity.webp" alt="The Infinity tech society homepage with bold lettering and event navigation" width="1280" height="850" loading="lazy" decoding="async">
               </a>
               <figcaption>Tech society homepage</figcaption>
@@ -166,7 +190,7 @@
               <h2 id="experience-title" data-build-part="write">Experience</h2>
               <dl class="history">
                 <div data-build-part="write"><dt>Fault Labs AI</dt><dd>Intern</dd></div>
-                <div data-build-part="write"><dt><a href="https://kronos.hackcbs.tech/">Kronos</a></dt><dd>The tech society of SSCBS</dd></div>
+                <div data-build-part="write"><dt><a href="https://kronos.hackcbs.tech/" target="_blank" rel="noopener noreferrer">Kronos</a></dt><dd>The tech society of SSCBS</dd></div>
               </dl>
             </section>
 
@@ -187,19 +211,26 @@
         <div class="activity-copy">
           <h2 id="activity-title" data-build-part="write">Outside class</h2>
           <p data-build-part="write">Hackathons taught me to understand the problem before writing code and explain the idea clearly to people outside tech.</p>
+          <section class="activity-chart" aria-labelledby="activity-chart-title" data-activity-chart data-build-part="drop" hidden>
+            <h3 id="activity-chart-title">Hackathon outcomes</h3>
+          </section>
         </div>
         <div class="activity-list" data-build-part="drop">
-          <details>
+          <details data-outcome="internal">
             <summary><span>Smart India Hackathon</span><span class="event-result">Internal round</span></summary>
             <p>Our team made it to the college’s internal round. We had an idea and were still figuring out the build plan and team roles. That experience taught me to agree on both early.</p>
           </details>
-          <details>
+          <details data-outcome="advanced">
             <summary><span>Sanket</span><span class="event-result">Qualified round one</span></summary>
             <p>Getting through the first round showed me the value of understanding the problem and explaining our solution clearly before diving into code.</p>
           </details>
-          <details>
+          <details data-outcome="advanced">
+            <summary><span>COGNITION AI Hackathon</span><span class="event-result">Qualified round one</span></summary>
+            <p>I qualified for the second round of COGNITION, an AI hackathon hosted by Techtonics at Sri Guru Gobind Singh College of Commerce. <a href="https://unstop.com/hackathons/cognition-ai-hackathon-techtonics-sri-guru-gobind-singh-college-of-commerce-sggscc-new-delhi-1790269" target="_blank" rel="noopener noreferrer">View the event on Unstop</a></p>
+          </details>
+          <details data-outcome="organized">
             <summary><span>hackCBS 9.0</span><span class="event-result">Organizing volunteer</span></summary>
-            <p>I volunteered with the organizing committee at SSCBS for hackCBS 9.0, billed by its organizers as India’s largest student-run hackathon. <a href="https://hackcbs.tech/">Visit hackCBS</a></p>
+            <p>I volunteered with the organizing committee at SSCBS for hackCBS 9.0, billed by its organizers as India’s largest student-run hackathon. <a href="https://hackcbs.tech/" target="_blank" rel="noopener noreferrer">Visit hackCBS</a></p>
           </details>
         </div>
       </section>
@@ -212,15 +243,21 @@
           <h2 id="contact-title" data-build-part="write">Get in touch.</h2>
           <p data-build-part="write">I’m open to working on projects and learning with other builders.</p>
           <div class="email-row" data-build-part="drop">
-            <a class="email-link" href="mailto:pranshushukla842008@gmail.com">pranshushukla842008@gmail.com</a>
-            <button type="button" class="copy-button" data-copy-email hidden>Copy email</button>
+            <a class="email-link" href="mailto:pranshushukla842008@gmail.com" data-tour-link>pranshushukla842008@gmail.com</a>
+            <button type="button" class="copy-button" data-copy-email hidden>
+              <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.45" stroke-linecap="round" stroke-linejoin="round">
+                <path class="copy-glyph" d="M6.5 6.5h9v10h-9zM4 13V4h8"/>
+                <path class="copy-check" d="m4.8 10 3.4 3.5 7-7" pathLength="1"/>
+              </svg>
+              <span data-copy-label>Copy email</span>
+            </button>
             <span class="sr-only" data-copy-status role="status"></span>
           </div>
         </div>
         <nav class="socials" aria-label="Social profiles" data-build-part="write">
-          <a href="https://www.linkedin.com/in/pranshushukla8408/">LinkedIn</a>
-          <a href="https://github.com/PranshuuShuklaa">GitHub</a>
-          <a href="https://www.instagram.com/unseen.framess/">Instagram</a>
+          <a href="https://www.linkedin.com/in/pranshushukla8408/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          <a href="https://github.com/PranshuuShuklaa" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="https://www.instagram.com/unseen.framess/" target="_blank" rel="noopener noreferrer">Instagram</a>
         </nav>
       </div>
     </footer>
@@ -292,7 +329,7 @@
         </svg>
       </button>
       <div class="companion-panel companion-actions" id="companion-actions" aria-label="Bit's actions" role="group" hidden>
-        <a data-companion-project hidden></a>
+        <a data-companion-project target="_blank" rel="noopener noreferrer" hidden></a>
         <a data-companion-next href="#work">See projects</a>
         <button type="button" data-companion-coffee>Coffee break</button>
         <button type="button" data-companion-spark>Cast a spark</button>
@@ -307,6 +344,45 @@
       </div>
       <span class="sr-only" data-companion-status role="status"></span>
     </div>
+
+    <div class="bit-tour" data-bit-tour hidden>
+      <div class="bit-tour-flyer bit-flight-art" aria-hidden="true" data-tour-flyer></div>
+      <div class="bit-tour-dialogue" aria-label="Bit’s guide" role="group" data-tour-dialogue hidden>
+        <button class="bit-tour-dismiss" type="button" aria-label="Dismiss Bit’s guide" data-tour-dismiss>
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 4 8 8m0-8-8 8" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+        </button>
+        <p data-tour-copy></p>
+        <div class="bit-tour-invite" data-tour-invite hidden>
+          <p data-tour-question></p>
+          <a class="bit-tour-link" data-tour-action></a>
+        </div>
+      </div>
+    </div>
+
+    <dialog class="quick-jump" id="quick-jump" aria-labelledby="quick-jump-title" data-quick-jump>
+      <div class="quick-jump-inner">
+        <header class="quick-jump-header">
+          <h2 id="quick-jump-title">Quick jump</h2>
+          <button type="button" data-quick-close>Close</button>
+        </header>
+        <label class="sr-only" for="quick-search">Find a section</label>
+        <input id="quick-search" type="search" placeholder="Find a project or section" autocomplete="off" autofocus>
+        <ul class="quick-jump-results" data-quick-results></ul>
+        <p class="quick-jump-empty" data-quick-empty role="status" hidden>No sections match that search.</p>
+      </div>
+    </dialog>
+
+    <template id="project-link-icon">
+      <svg class="project-link-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <path class="project-link-arrow" d="m8 16 8-8m-5 0h5v5" stroke-width="1.6"/>
+        <g class="project-link-filings" stroke-width="1.15">
+          <path d="m4 9 2 1" style="--toward-x: 2px; --toward-y: 1px"/>
+          <path d="m13 3-1 2" style="--toward-x: -1px; --toward-y: 2px"/>
+          <path d="m20 13-2 1" style="--toward-x: -2px; --toward-y: -1px"/>
+          <path d="m11 20 1-2" style="--toward-x: 1px; --toward-y: -2px"/>
+        </g>
+      </svg>
+    </template>
 
     <template id="cursor-template">
       <span class="build-pointer" aria-hidden="true">

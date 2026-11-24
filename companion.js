@@ -16,7 +16,6 @@
   const broom = companion.querySelector("[data-companion-broom]");
   const header = document.querySelector(".topbar");
   const opening = document.querySelector(".opening");
-  const hero = opening.querySelector(".hero");
   const contact = document.querySelector("#contact");
   const stops = [...document.querySelectorAll(".opening, .work-handoff, .project, .profile, .activity, .contact")];
   const { createTimeline, cubicBezier } = window.anime ?? {};
@@ -244,7 +243,8 @@
   }
 
   function canOfferCoffee() {
-    return state === "rest" && !sleeping && !companion.hidden && !document.hidden && actions.hidden;
+    return state === "rest" && !sleeping && !companion.hidden && !document.hidden && actions.hidden &&
+      !document.body.hasAttribute("data-bit-tour-active");
   }
 
   function visitorIsBusy() {
@@ -288,20 +288,15 @@
 
   function reveal() {
     if (!companion.hidden) return;
-    clearTimeout(revealTimer);
-    heroObserver.disconnect();
     companion.hidden = false;
     stopMotion();
     scheduleCoffee();
   }
 
-  const heroObserver = new MutationObserver(() => {
-    if (hero.dataset.buildState === "built") reveal();
-  });
-  const revealTimer = setTimeout(reveal, 1500);
-  heroObserver.observe(hero, { attributes: true, attributeFilter: ["data-build-state"] });
   document.body.dataset.companionReady = "";
-  if (!["pending", "running"].includes(hero.dataset.buildState) || lastScroll > 0) reveal();
+  if (reduced.matches || lastScroll > 0) reveal();
+  document.addEventListener("bit-tour-start", closeCoffee);
+  document.addEventListener("quick-jump-open", closeCoffee);
 
   companion.addEventListener("toggle-bit", () => {
     reveal();

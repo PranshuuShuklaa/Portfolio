@@ -33,7 +33,6 @@ document.querySelectorAll("[data-circuit]").forEach(canvas => {
   let paths = [];
   let visible = false;
   let frame = 0;
-  let lastPaint = 0;
   let hovered = -1;
   let bursts = [];
   let traceColor;
@@ -144,10 +143,7 @@ document.querySelectorAll("[data-circuit]").forEach(canvas => {
       frame = 0;
       return;
     }
-    if (now - lastPaint >= 30) {
-      lastPaint = now;
-      paint(now);
-    }
+    paint(now);
     frame = requestAnimationFrame(tick);
   }
 

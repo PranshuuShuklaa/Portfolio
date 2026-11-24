@@ -68,6 +68,69 @@
     ["contact", ["contact", "Contact"]]
   ]);
 
+  const quickJump = document.querySelector("[data-quick-jump]");
+  if (typeof quickJump.showModal === "function") {
+    const jumpTrigger = document.querySelector("[data-quick-open]");
+    const search = quickJump.querySelector("input");
+    const list = quickJump.querySelector("[data-quick-results]");
+    const empty = quickJump.querySelector("[data-quick-empty]");
+    const mac = /^mac/i.test(navigator.userAgentData?.platform ?? navigator.platform);
+    const options = Array.from(destinations, ([key, [id, label]]) => {
+      const item = document.createElement("li");
+      const link = document.createElement("a");
+      const group = document.createElement("span");
+      group.textContent = document.getElementById(id).matches(".project") ? "Project" : "Section";
+      link.href = `#${id}`;
+      link.append(label, group);
+      item.append(link);
+      list.append(item);
+      return { item, link, terms: `${key} ${label} ${group.textContent}`.toLowerCase() };
+    });
+
+    function filterJump() {
+      const terms = search.value.trim().toLowerCase().split(/\s+/);
+      for (const option of options) option.item.hidden = !terms.every(term => option.terms.includes(term));
+      empty.hidden = options.some(option => !option.item.hidden);
+    }
+
+    function openJump() {
+      if (quickJump.open) return;
+      search.value = "";
+      filterJump();
+      quickJump.showModal();
+      search.focus();
+      document.dispatchEvent(new Event("quick-jump-open"));
+    }
+
+    jumpTrigger.querySelector("kbd").textContent = mac ? "⌘ K" : "Ctrl K";
+    jumpTrigger.hidden = false;
+    jumpTrigger.addEventListener("click", openJump);
+    search.addEventListener("input", filterJump);
+    quickJump.querySelector("[data-quick-close]").addEventListener("click", () => quickJump.close());
+    quickJump.addEventListener("click", event => {
+      if (event.target === quickJump || event.target.closest("a")) quickJump.close();
+    });
+    document.addEventListener("keydown", event => {
+      if (event.key.toLowerCase() !== "k" || (!event.ctrlKey && !event.metaKey) || event.altKey || event.shiftKey) return;
+      event.preventDefault();
+      if (quickJump.open) search.focus();
+      else openJump();
+    });
+    quickJump.addEventListener("keydown", event => {
+      const results = options.filter(option => !option.item.hidden).map(option => option.link);
+      if (!results.length) return;
+      if (event.key === "Enter" && event.target === search) {
+        event.preventDefault();
+        results[0].click();
+      } else if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        event.preventDefault();
+        const index = results.indexOf(document.activeElement);
+        const next = event.key === "ArrowDown" ? index + 1 : index < 0 ? results.length - 1 : index - 1;
+        (results[next] ?? search).focus();
+      }
+    });
+  }
+
   function appendLine(command, response) {
     const entry = document.createElement("div");
     entry.className = "terminal-entry";
@@ -125,27 +188,37 @@
   });
 
   const copy = document.querySelector("[data-copy-email]");
+  const copyLabel = copy.querySelector("[data-copy-label]");
   const copyStatus = document.querySelector("[data-copy-status]");
   const email = document.querySelector(".email-link");
   let copyTimer;
+  let copyAttempt = 0;
 
   copy.hidden = false;
   copy.addEventListener("click", async () => {
     clearTimeout(copyTimer);
+    const attempt = ++copyAttempt;
     try {
       await navigator.clipboard.writeText(email.textContent.trim());
-      copy.textContent = "Copied";
+      if (attempt !== copyAttempt) return;
+      copy.dataset.copyState = "copied";
+      copyLabel.textContent = "Copied";
       copyStatus.textContent = "Email address copied.";
     } catch {
+      if (attempt !== copyAttempt) return;
       const text = document.createRange();
       text.selectNodeContents(email);
       const selection = window.getSelection();
       selection.removeAllRanges();
       selection.addRange(text);
-      copy.textContent = "Selected";
+      copy.dataset.copyState = "selected";
+      copyLabel.textContent = "Selected";
       copyStatus.textContent = "Email address selected. Use your copy shortcut.";
     }
-    copyTimer = setTimeout(() => { copy.textContent = "Copy email"; }, 2200);
+    copyTimer = setTimeout(() => {
+      delete copy.dataset.copyState;
+      copyLabel.textContent = "Copy email";
+    }, 2200);
   });
 
   window.addEventListener("scroll", schedule, { passive: true });

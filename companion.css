@@ -26,6 +26,8 @@ body[data-companion-ready] :is(main, footer) .frame {
 
 .companion-trigger:focus-visible { outline-offset: -3px; }
 .companion-art { display: block; width: 100%; height: 100%; overflow: visible; }
+body:is([data-name-intro], [data-bit-tour-active]) .companion { visibility: hidden; }
+body:has(.build-bit) .companion:not(:focus-within) { visibility: hidden; }
 .companion-broom, .companion-trail, .companion-dust, .companion-seated { opacity: 0; }
 .companion-coffee, .companion-kettle, .companion-pour, .companion-steam, .companion-spell { opacity: 0; }
 .companion-coffee { pointer-events: none; }
@@ -114,6 +116,68 @@ body[data-companion-ready] :is(main, footer) .frame {
   .companion-standing, .companion-seated { transition: opacity 120ms ease; }
   .companion-trigger:active .companion-art { scale: .94; }
   .companion-panel:not([hidden]) { animation: companion-actions-in 180ms ease-out; }
+  .companion-trigger .companion-art { transition: translate 240ms cubic-bezier(.22, 1, .36, 1); }
+  .companion[data-state="rest"]:not([data-coffee], [data-reaction], [data-sleeping="true"]) .companion-trigger:is(:hover, :focus-visible) .companion-art { translate: 0 -5px; }
+  .companion[data-state="rest"]:not([data-coffee], [data-reaction], [data-sleeping="true"]) .companion-trigger:is(:hover, :focus-visible) .companion-arm { animation: companion-wave 640ms ease-in-out both; }
+}
+
+.bit-flight-art { width: clamp(3.55rem, 5vw, 4.5rem); height: auto; }
+.bit-flight-art .companion-art { height: auto; }
+.bit-flight-art .companion-broom, .bit-flight-art .companion-seated { opacity: 1; }
+.bit-flight-art :is(.companion-standing, .companion-shadow) { opacity: 0; }
+.bit-flight-art .companion-rider { transform: translateY(-4px) rotate(-4deg); }
+
+.bit-tour { position: fixed; z-index: 8; inset: 0; pointer-events: none; }
+.bit-tour-flyer, .bit-tour-dialogue { position: absolute; top: 0; left: 0; }
+.bit-tour-flyer.is-hovering .companion-art { animation: bit-tour-hover 1.65s ease-in-out infinite; }
+.bit-tour-flyer:not(.is-hovering) .companion-trail { animation: companion-trail 780ms linear infinite; }
+
+.bit-tour-dialogue {
+  width: min(17.25rem, calc(100vw - 1.5rem));
+  padding: .85rem 2.25rem .78rem .9rem;
+  background: var(--cream);
+  color: var(--ink);
+  box-shadow: 0 .38rem 1.2rem #231f1b2c; /* taste-skill-ignore: temporary dialogue overlay. */
+  font-size: .96rem;
+  line-height: 1.36;
+  pointer-events: auto;
+}
+
+.bit-tour-dismiss {
+  position: absolute;
+  top: .15rem;
+  right: .15rem;
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: .6rem;
+  border: 0;
+  background: transparent;
+}
+
+.bit-tour-dismiss:hover { color: var(--accent); }
+.bit-tour-dismiss svg { width: 100%; }
+.bit-tour-invite { margin-top: .48rem; }
+.bit-tour-invite p { color: var(--muted); }
+.bit-tour-link { display: inline-flex; align-items: center; min-height: 2.75rem; color: var(--accent); font-weight: 680; }
+.bit-tour-link:hover { color: var(--ink); }
+.bit-tour-target { outline: 2px solid var(--accent); outline-offset: 3px; }
+.contact .bit-tour-target { outline-color: var(--cream); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .bit-tour-dialogue { transition: opacity 170ms ease, translate 170ms ease; }
+  .bit-tour-dialogue:is(.is-in-flight, [hidden]):not(:focus-within) { opacity: 0; translate: 0 5px; }
+  @starting-style {
+    .bit-tour-dialogue:not([hidden]) { opacity: 0; translate: 0 5px; }
+  }
+}
+
+.bit-tour-dialogue.is-in-flight:not(:focus-within) { pointer-events: none; }
+
+@keyframes bit-tour-hover {
+  0%, 100% { transform: translateY(0) rotate(-3deg); }
+  50% { transform: translateY(-6px) rotate(1deg); }
 }
 
 @keyframes companion-actions-in {

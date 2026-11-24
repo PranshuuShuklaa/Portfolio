@@ -1,6 +1,8 @@
 (() => {
   const header = document.querySelector(".topbar");
   const pointerTemplate = document.querySelector("#cursor-template");
+  const bitArtwork = document.querySelector(".companion-art");
+  const name = document.querySelector("#name");
   const sections = [...document.querySelectorAll(".site-nav a")].map(link => ({
     link, target: document.querySelector(link.hash)
   }));
@@ -22,6 +24,7 @@
   let layoutWidth = document.documentElement.clientWidth;
   let lastScroll = window.scrollY;
   let direction = 1;
+  let nameIntro;
 
   function canPlay() {
     return supported && !reduced.matches;
@@ -35,6 +38,7 @@
     if (timeline) timeline.revert();
     scene.overlay?.remove();
     scene.overlay = null;
+    if (scene.element.dataset.build === "hero") delete name.dataset.introPlaced;
   }
 
   function settleAll() {
@@ -75,7 +79,7 @@
     if (window.scrollY !== lastScroll) direction = window.scrollY > lastScroll ? 1 : -1;
     lastScroll = window.scrollY;
     updateLocation(top);
-    if (!canPlay()) return;
+    if (!canPlay() || nameIntro) return;
 
     const positions = scenes.map(scene => ({
       scene, rect: scene.element.getBoundingClientRect()
@@ -120,6 +124,84 @@
   function place(node, x, y) {
     node.style.left = `${x}px`;
     node.style.top = `${y}px`;
+  }
+
+  function flyingBit(container, className) {
+    const bit = document.createElement("div");
+    bit.className = `bit-flight-art ${className}`;
+    bit.append(bitArtwork.cloneNode(true));
+    container.append(bit);
+    return bit;
+  }
+
+  function finishNameIntro(placed = false) {
+    if (!nameIntro) return;
+    const { layer, timeline, timeout } = nameIntro;
+    nameIntro = null;
+    clearTimeout(timeout);
+    timeline.cancel();
+    layer.remove();
+    delete document.body.dataset.nameIntro;
+    if (placed) name.dataset.introPlaced = "";
+    schedule();
+  }
+
+  function introduceName() {
+    if (!canPlay() || scrollY || location.hash || document.hidden) return;
+    const label = name.cloneNode(true);
+    label.removeAttribute("id");
+    label.className = "name-intro-label";
+    const position = name.getBoundingClientRect();
+    const lines = Array.from(name.children, line => line.getBoundingClientRect());
+    const width = Math.max(...lines.map(line => line.width));
+    const viewport = document.documentElement.clientWidth;
+    const startX = Math.max(12, (viewport - width) / 2);
+    const startY = Math.max(header.offsetHeight + 12, (innerHeight - position.height) / 2);
+    const type = getComputedStyle(name);
+    Object.assign(label.style, {
+      width: `${width}px`, fontFamily: type.fontFamily, fontSize: type.fontSize,
+      fontWeight: type.fontWeight, lineHeight: type.lineHeight, letterSpacing: type.letterSpacing
+    });
+    place(label, startX, startY);
+
+    const layer = document.createElement("div");
+    layer.className = "name-intro";
+    layer.setAttribute("aria-hidden", "true");
+    const paper = document.createElement("div");
+    paper.className = "name-intro-paper";
+    layer.append(paper, label);
+    const bit = flyingBit(layer, "name-intro-scribe");
+    document.body.append(layer);
+    document.body.dataset.nameIntro = "";
+    const size = bit.offsetWidth;
+    const timeline = createTimeline({ autoplay: false, onComplete: () => finishNameIntro(true) });
+    nameIntro = { layer, timeline, timeout: setTimeout(() => finishNameIntro(), 1700) };
+
+    let previous = { x: startX - 140, y: startY + 24 };
+    lines.forEach((line, index) => {
+      const time = 155 + index * 365;
+      const y = startY + line.top - position.top + line.height * .7 - size / 2;
+      const x = startX - size * .42;
+      const end = Math.min(viewport - size / 1.6, startX + line.width - size * .45);
+      timeline.add(bit, {
+        x: [previous.x, x], y: [previous.y, y],
+        opacity: index === 0 ? [0, 1] : [1, 1], duration: 125, ease: landing
+      }, time - 125);
+      timeline.add(bit, { x: [x, end], y: [y, y - 3], duration: 240, ease: pulling }, time);
+      timeline.add(label.children[index], {
+        clipPath: ["inset(0 100% 0 0)", "inset(0 -4% 0 0)"], duration: 240, ease: pulling
+      }, time);
+      previous = { x: end, y: y - 3 };
+    });
+    timeline.add(label, {
+      x: [0, position.left - startX], y: [0, position.top - startY], duration: 365, ease: landing
+    }, 800);
+    timeline.add(paper, { opacity: [1, 0], duration: 330, ease: landing }, 815);
+    timeline.add(bit, {
+      x: [previous.x, previous.x + 100], y: [previous.y, previous.y - 55],
+      opacity: [1, 0], duration: 315, ease: landing
+    }, 800);
+    timeline.play();
   }
 
   function pointer(overlay, alternate = false) {
@@ -180,26 +262,24 @@
 
   function write(timeline, overlay, element, box, time, index, crew, direction) {
     const cursor = pointer(overlay, index % 2 === 1);
-    const first = point(box, 0, 1);
-    const last = point(box, 1, 1);
+    const first = point(box, 0, .82);
+    const last = point(box, 1, .82);
     const start = { x: first.x - (compact.matches ? 48 : 86), y: first.y + 37 * direction };
     const contact = time + 305;
     const draw = Math.min(520, 285 + box.width * .34);
-    const guide = selection(overlay, { ...box, top: first.y + 1, height: 2 }, "build-selection build-trace");
+    const guide = selection(overlay, { ...box, top: box.top + box.height * .14, height: box.height * .72 }, "build-selection build-skeleton");
     guide.style.transformOrigin = "left center";
     approach(timeline, cursor, start, first, time, 305);
     ripple(timeline, overlay, first, contact);
     timeline.call(() => guide.classList.add("is-present"), contact);
     timeline.add(element, {
-      opacity: [1, 1],
-      clipPath: ["inset(0% 100% 0% 0%)", "inset(0% -2% 0% 0%)"],
-      ease: pulling, duration: draw
-    }, contact);
+      opacity: [0, 1], ease: landing, duration: 180
+    }, contact + draw * .76);
     timeline.add(guide, {
       opacity: [{ from: 0, to: .83, duration: 65 }, { to: .83, duration: draw - 65 }],
       scaleX: [0, 1], duration: draw, ease: pulling
     }, contact);
-    timeline.add(guide, { opacity: [.83, 0], duration: 175 }, contact + draw);
+    timeline.add(guide, { opacity: [.83, 0], duration: 175 }, contact + draw * .8);
     chase(timeline, cursor, first, last, contact, draw);
     depart(timeline, cursor, last, 1, contact + draw);
   }
@@ -209,9 +289,13 @@
     const spot = point(box, compact.matches ? .72 : .85, .56);
     const start = { x: spot.x + 66, y: spot.y + 53 * direction };
     const contact = time + 330;
+    const outline = selection(overlay, box);
     approach(timeline, cursor, start, spot, time, 330);
     ripple(timeline, overlay, spot, contact);
-    timeline.add(element, { opacity: [.42, 1], y: [9, 0], ease: landing, duration: 300 }, contact);
+    timeline.call(() => outline.classList.add("is-present"), contact);
+    timeline.add(outline, { opacity: [0, .72], scale: [.92, 1], duration: 155, ease: landing }, contact);
+    timeline.add(outline, { opacity: [.72, 0], duration: 175 }, contact + 155);
+    timeline.add(element, { opacity: [0, 1], y: [5, 0], ease: landing, duration: 210 }, contact + 130);
     timeline.add(cursor, { scale: [1, .81, 1], duration: 155, ease: landing }, contact);
     depart(timeline, cursor, spot, 1, contact + 145);
   }
@@ -222,13 +306,6 @@
     const release = opening + duration;
     const outline = selection(overlay, box);
     const corners = crew ? [[0, 0], [1, 1], [1, 0], [0, 1]] : [[0, 0], [1, 1]];
-
-    if (crew) {
-      const footprint = selection(overlay, box, "build-footprint");
-      timeline.call(() => footprint.classList.add("is-present"), time);
-      timeline.add(footprint, { opacity: [0, .62], duration: 190, ease: landing }, time);
-      timeline.add(footprint, { opacity: [.62, 0], duration: duration + 145, ease: pulling }, opening);
-    }
 
     corners.forEach(([x, y], cornerIndex) => {
       const cursor = pointer(overlay, (index + cornerIndex) % 2 === 1);
@@ -245,10 +322,8 @@
 
     timeline.call(() => outline.classList.add("is-present"), opening);
     timeline.add(element, {
-      opacity: { from: .79, to: 1, duration: 195 },
-      clipPath: ["inset(38% 43% 38% 43%)", "inset(0% 0% 0% 0%)"],
-      duration, ease: pulling
-    }, opening);
+      opacity: [0, 1], duration: 260, ease: landing
+    }, release - 130);
     timeline.add(outline, {
       opacity: { from: 0, to: .9, duration: 130 },
       scaleX: [.14, 1],
@@ -260,11 +335,22 @@
 
   const moves = { write, drop, drag };
 
+  function helpBuild(timeline, overlay, box, sceneWidth) {
+    const bit = flyingBit(overlay, "build-bit");
+    const corner = point(box, .87, .76);
+    const x = Math.max(0, Math.min(sceneWidth - bit.offsetWidth, corner.x - 25));
+    const y = corner.y - 30;
+    timeline.add(bit, { x: [x + 90, x], y: [y - 52, y], opacity: [0, 1], duration: 375, ease: landing }, 140);
+    ripple(timeline, overlay, corner, 560);
+    timeline.add(bit, { y: [y, y - 8, y], duration: 360, ease: pulling }, 515);
+    timeline.add(bit, { x: [x, x + 65], y: [y, y - 53], opacity: [1, 0], duration: 240, ease: releaseEase }, 875);
+  }
+
   function play(scene, sceneRect, direction) {
     const overlay = document.createElement("div");
     overlay.className = "build-overlay";
     overlay.setAttribute("aria-hidden", "true");
-    const geometry = scene.parts.map(element => {
+    const geometry = scene.parts.filter(element => !element.closest("[data-intro-placed]")).map(element => {
       const rect = element.getBoundingClientRect();
       return {
         element,
@@ -287,12 +373,17 @@
       const gap = compact.matches ? 74 : 100;
       const delay = scene.element.dataset.build === "hero" ? 65 : 0;
       const crew = scene.element.hasAttribute("data-crew");
-      const sequence = crew
+      const sequence = crew || scene.element.dataset.build === "hero"
         ? geometry.slice().sort((a, b) => Number(b.element.dataset.buildPart === "drag") - Number(a.element.dataset.buildPart === "drag"))
         : geometry;
       sequence.forEach(({ element, box }, index) => {
         moves[element.dataset.buildPart](timeline, overlay, element, box, delay + index * gap, index, crew, direction);
       });
+      const hasHelper = crew || ["hero", "about", "activity", "contact"].includes(scene.element.dataset.build);
+      if (hasHelper && !document.querySelector(".build-bit")) {
+        const helper = sequence.find(({ element }) => element.dataset.buildPart === "drag") ?? sequence.at(-1);
+        if (helper) helpBuild(timeline, overlay, helper.box, sceneRect.width);
+      }
       timeline.play();
     } catch (error) {
       console.error("Could not run the cursor build.", error);
@@ -301,13 +392,18 @@
   }
 
   reduced.addEventListener("change", () => {
+    finishNameIntro();
     if (reduced.matches) settleAll();
     else resetBuild();
   });
-  window.addEventListener("scroll", schedule, { passive: true });
+  window.addEventListener("scroll", () => {
+    if (scrollY) finishNameIntro();
+    schedule();
+  }, { passive: true });
   window.addEventListener("resize", () => {
     const width = document.documentElement.clientWidth;
     if (width !== layoutWidth) {
+      finishNameIntro();
       layoutWidth = width;
       scenes.filter(scene => scene.state === "running").forEach(finish);
     }
@@ -315,19 +411,27 @@
   }, { passive: true });
 
   document.addEventListener("focusin", event => {
+    finishNameIntro();
     const parent = event.target.closest("[data-build]");
     const scene = scenes.find(candidate => candidate.element === parent);
     if (scene && scene.state !== "built") finish(scene);
   });
 
   document.addEventListener("keydown", event => {
-    if (event.key === "Escape") scenes.filter(scene => scene.state === "running").forEach(finish);
+    if (event.key === "Escape") {
+      finishNameIntro();
+      scenes.filter(scene => scene.state === "running").forEach(finish);
+    }
   });
 
   document.addEventListener("visibilitychange", () => {
-    if (document.hidden) scenes.filter(scene => scene.state === "running").forEach(finish);
+    if (document.hidden) {
+      finishNameIntro();
+      scenes.filter(scene => scene.state === "running").forEach(finish);
+    }
     else schedule();
   });
 
   resetBuild();
+  introduceName();
 })();
