@@ -1,6 +1,6 @@
 (() => {
   const header = document.querySelector(".topbar");
-  const pointerTemplate = document.querySelector("#cursor-template");
+  const bitTemplate = document.querySelector("#build-bit-template");
   const bitArtwork = document.querySelector(".companion-art");
   const name = document.querySelector("#name");
   const sections = [...document.querySelectorAll(".site-nav a")].map(link => ({
@@ -9,7 +9,7 @@
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
   const compact = window.matchMedia("(max-width: 42rem)");
   const { createTimeline, cubicBezier } = window.anime ?? {};
-  const supported = Boolean(createTimeline && cubicBezier && pointerTemplate);
+  const supported = Boolean(createTimeline && cubicBezier && bitTemplate);
   const landing = supported ? cubicBezier(.23, .62, .24, 1) : "linear";
   const pulling = supported ? cubicBezier(.43, .06, .23, 1) : "linear";
   const releaseEase = supported ? cubicBezier(.3, .12, .66, 1) : "linear";
@@ -204,34 +204,37 @@
     timeline.play();
   }
 
-  function pointer(overlay, alternate = false) {
-    const element = pointerTemplate.content.firstElementChild.cloneNode(true);
-    if (alternate) element.classList.add("is-alt");
-    overlay.append(element);
-    return element;
+  function worker(overlay, alternate) {
+    const bit = document.createElement("span");
+    bit.className = "build-bit";
+    bit.classList.toggle("is-alt", alternate);
+    bit.append(bitTemplate.content.cloneNode(true));
+    overlay.append(bit);
+    return bit;
   }
 
-  function approach(timeline, cursor, start, destination, time, duration) {
-    timeline.call(() => cursor.classList.add("is-present"), time);
-    timeline.add(cursor, {
+  function approach(timeline, bit, start, destination, time, duration) {
+    timeline.add(bit, {
       x: [start.x, destination.x],
       y: [start.y, destination.y],
-      opacity: { from: 0, to: 1, duration: 150 },
+      rotate: [start.x < destination.x ? 15 : -15, 0],
+      opacity: { from: 0, to: 1, duration: 165 },
       duration,
       ease: landing
     }, time);
   }
 
-  function chase(timeline, cursor, start, destination, time, duration, ease = pulling) {
-    timeline.add(cursor, { x: [start.x, destination.x], y: [start.y, destination.y], duration, ease }, time);
+  function carry(timeline, bit, start, destination, time, duration) {
+    timeline.add(bit, { x: [start.x, destination.x], y: [start.y, destination.y], duration, ease: pulling }, time);
   }
 
-  function depart(timeline, cursor, point, direction, time) {
-    timeline.add(cursor, {
-      x: [point.x, point.x + direction * 54],
-      y: [point.y, point.y - 29],
+  function depart(timeline, bit, point, direction, time) {
+    timeline.add(bit, {
+      x: [point.x, point.x + direction * 72],
+      y: [point.y, point.y - 45],
+      rotate: [0, -direction * 20],
       opacity: [1, 0],
-      duration: 230,
+      duration: 275,
       ease: releaseEase
     }, time);
   }
@@ -260,44 +263,55 @@
     return outline;
   }
 
+  function seal(timeline, outline, width, time) {
+    const light = document.createElement("span");
+    light.className = "build-seal";
+    outline.append(light);
+    timeline.add(light, {
+      x: [-16, width], opacity: [{ from: 0, to: .78, duration: 65 }, { to: 0, duration: 200 }],
+      duration: 265, ease: pulling
+    }, time);
+  }
+
   function write(timeline, overlay, element, box, time, index, crew, direction) {
-    const cursor = pointer(overlay, index % 2 === 1);
+    const bit = worker(overlay, index % 2 === 1);
     const first = point(box, 0, .82);
     const last = point(box, 1, .82);
     const start = { x: first.x - (compact.matches ? 48 : 86), y: first.y + 37 * direction };
-    const contact = time + 305;
-    const draw = Math.min(520, 285 + box.width * .34);
+    const contact = time + 315;
+    const draw = Math.min(490, 275 + box.width * .32);
     const guide = selection(overlay, { ...box, top: box.top + box.height * .14, height: box.height * .72 }, "build-selection build-skeleton");
     guide.style.transformOrigin = "left center";
-    approach(timeline, cursor, start, first, time, 305);
+    approach(timeline, bit, start, first, time, 315);
     ripple(timeline, overlay, first, contact);
     timeline.call(() => guide.classList.add("is-present"), contact);
     timeline.add(element, {
-      opacity: [0, 1], ease: landing, duration: 180
-    }, contact + draw * .76);
+      opacity: [0, 1], y: [3, 0], ease: landing, duration: 210
+    }, contact + draw * .8);
     timeline.add(guide, {
       opacity: [{ from: 0, to: .83, duration: 65 }, { to: .83, duration: draw - 65 }],
       scaleX: [0, 1], duration: draw, ease: pulling
     }, contact);
-    timeline.add(guide, { opacity: [.83, 0], duration: 175 }, contact + draw * .8);
-    chase(timeline, cursor, first, last, contact, draw);
-    depart(timeline, cursor, last, 1, contact + draw);
+    timeline.add(guide, { opacity: [.83, 0], duration: 210, ease: landing }, contact + draw);
+    carry(timeline, bit, first, last, contact, draw);
+    depart(timeline, bit, last, 1, contact + draw + 35);
   }
 
   function drop(timeline, overlay, element, box, time, index, crew, direction) {
-    const cursor = pointer(overlay, index % 2 === 1);
+    const bit = worker(overlay, index % 2 === 1);
     const spot = point(box, compact.matches ? .72 : .85, .56);
     const start = { x: spot.x + 66, y: spot.y + 53 * direction };
     const contact = time + 330;
     const outline = selection(overlay, box);
-    approach(timeline, cursor, start, spot, time, 330);
+    approach(timeline, bit, start, spot, time, 330);
     ripple(timeline, overlay, spot, contact);
     timeline.call(() => outline.classList.add("is-present"), contact);
-    timeline.add(outline, { opacity: [0, .72], scale: [.92, 1], duration: 155, ease: landing }, contact);
-    timeline.add(outline, { opacity: [.72, 0], duration: 175 }, contact + 155);
+    timeline.add(outline, { opacity: [0, .78], scale: [.86, 1], duration: 195, ease: landing }, contact);
+    timeline.add(outline, { opacity: [.78, 0], duration: 200, ease: landing }, contact + 195);
+    seal(timeline, outline, box.width, contact + 130);
     timeline.add(element, { opacity: [0, 1], y: [5, 0], ease: landing, duration: 210 }, contact + 130);
-    timeline.add(cursor, { scale: [1, .81, 1], duration: 155, ease: landing }, contact);
-    depart(timeline, cursor, spot, 1, contact + 145);
+    timeline.add(bit, { scale: [1, .9, 1], y: [spot.y, spot.y + 5, spot.y], duration: 180, ease: landing }, contact);
+    depart(timeline, bit, spot, 1, contact + 190);
   }
 
   function drag(timeline, overlay, element, box, time, index, crew) {
@@ -305,19 +319,19 @@
     const duration = 680;
     const release = opening + duration;
     const outline = selection(overlay, box);
-    const corners = crew ? [[0, 0], [1, 1], [1, 0], [0, 1]] : [[0, 0], [1, 1]];
+    const corners = crew && box.width >= 220 ? [[0, 0], [1, 1], [1, 0], [0, 1]] : [[0, 0], [1, 1]];
 
     corners.forEach(([x, y], cornerIndex) => {
-      const cursor = pointer(overlay, (index + cornerIndex) % 2 === 1);
-      const grab = point(box, x ? .57 : .43, y ? .62 : .38);
+      const bit = worker(overlay, (index + cornerIndex) % 2 === 1);
+      const grab = point(box, x ? .66 : .34, y ? .67 : .33);
       const corner = point(box, x, y);
       const start = { x: corner.x + (x ? 120 : -120), y: corner.y + (y ? 88 : -88) };
       const delay = cornerIndex * 32;
-      approach(timeline, cursor, start, grab, time + delay, 370 - delay);
+      approach(timeline, bit, start, grab, time + delay, 370 - delay);
       ripple(timeline, overlay, grab, opening);
-      chase(timeline, cursor, grab, corner, opening, duration);
+      carry(timeline, bit, grab, corner, opening, duration);
       ripple(timeline, overlay, corner, release);
-      depart(timeline, cursor, corner, x ? 1 : -1, release + 65);
+      depart(timeline, bit, corner, x ? 1 : -1, release + 65);
     });
 
     timeline.call(() => outline.classList.add("is-present"), opening);
@@ -326,25 +340,15 @@
     }, release - 130);
     timeline.add(outline, {
       opacity: { from: 0, to: .9, duration: 130 },
-      scaleX: [.14, 1],
-      scaleY: [.24, 1],
+      scaleX: [.32, 1],
+      scaleY: [.34, 1],
       duration, ease: pulling
     }, opening);
-    timeline.add(outline, { opacity: [.9, 0], duration: 235 }, release);
+    seal(timeline, outline, box.width, release - 100);
+    timeline.add(outline, { opacity: [.9, 0], duration: 265, ease: landing }, release);
   }
 
   const moves = { write, drop, drag };
-
-  function helpBuild(timeline, overlay, box, sceneWidth) {
-    const bit = flyingBit(overlay, "build-bit");
-    const corner = point(box, .87, .76);
-    const x = Math.max(0, Math.min(sceneWidth - bit.offsetWidth, corner.x - 25));
-    const y = corner.y - 30;
-    timeline.add(bit, { x: [x + 90, x], y: [y - 52, y], opacity: [0, 1], duration: 375, ease: landing }, 140);
-    ripple(timeline, overlay, corner, 560);
-    timeline.add(bit, { y: [y, y - 8, y], duration: 360, ease: pulling }, 515);
-    timeline.add(bit, { x: [x, x + 65], y: [y, y - 53], opacity: [1, 0], duration: 240, ease: releaseEase }, 875);
-  }
 
   function play(scene, sceneRect, direction) {
     const overlay = document.createElement("div");
@@ -379,14 +383,9 @@
       sequence.forEach(({ element, box }, index) => {
         moves[element.dataset.buildPart](timeline, overlay, element, box, delay + index * gap, index, crew, direction);
       });
-      const hasHelper = crew || ["hero", "about", "activity", "contact"].includes(scene.element.dataset.build);
-      if (hasHelper && !document.querySelector(".build-bit")) {
-        const helper = sequence.find(({ element }) => element.dataset.buildPart === "drag") ?? sequence.at(-1);
-        if (helper) helpBuild(timeline, overlay, helper.box, sceneRect.width);
-      }
       timeline.play();
     } catch (error) {
-      console.error("Could not run the cursor build.", error);
+      console.error("Could not run the Bit crew animation.", error);
       finish(scene);
     }
   }

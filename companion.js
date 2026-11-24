@@ -7,6 +7,13 @@
   const sleepButton = companion.querySelector("[data-companion-toggle]");
   const coffeeButton = companion.querySelector("[data-companion-coffee]");
   const sparkButton = companion.querySelector("[data-companion-spark]");
+  const crewButton = companion.querySelector("[data-companion-crew]");
+  const tipButton = companion.querySelector("[data-companion-tip]");
+  const flyby = companion.querySelector("[data-companion-flyby]");
+  const bitTemplate = document.querySelector("#build-bit-template");
+  const tip = companion.querySelector(".companion-tip");
+  const tipText = tip.querySelector("[data-companion-tip-copy]");
+  const tipClose = tip.querySelector("[data-companion-tip-close]");
   const coffeeNote = companion.querySelector(".companion-note");
   const coffeeTitle = coffeeNote.querySelector("p");
   const acceptCoffee = coffeeNote.querySelector("[data-coffee-accept]");
@@ -30,6 +37,8 @@
   let reactionTimer;
   let coffeeTimer;
   let offeredCoffee = false;
+  let flybyMotion;
+  let flybyTimer;
   let lastScroll = Math.max(0, window.scrollY);
   let lastInput = 0;
   let lastFrame = 0;
@@ -196,13 +205,15 @@
     sleepButton.textContent = sleeping ? "Wake Bit" : "Put Bit to sleep";
     coffeeButton.hidden = sleeping;
     sparkButton.hidden = sleeping;
+    crewButton.hidden = sleeping;
+    tipButton.hidden = sleeping;
   }
 
   function toggleSleep() {
     sleeping = !sleeping;
     companion.dataset.sleeping = String(sleeping);
     closeActions(actions.contains(document.activeElement));
-    closeCoffee();
+    dismissExtras();
     stopMotion();
     if (!sleeping) react("wave");
     scheduleCoffee();
@@ -214,7 +225,7 @@
       scheduleCoffee();
       return;
     }
-    closeCoffee();
+    dismissExtras();
     stopMotion();
     updateActions();
     actions.hidden = false;
@@ -242,9 +253,84 @@
     status.textContent = "";
   }
 
+  function closeTip() {
+    if (tip.contains(document.activeElement)) trigger.focus({ preventScroll: true });
+    tip.hidden = true;
+  }
+
+  function clearFlyby() {
+    clearTimeout(flybyTimer);
+    flybyMotion?.cancel();
+    flybyMotion = null;
+    if (flyby.hidden) return;
+    flyby.hidden = true;
+    flyby.replaceChildren();
+  }
+
+  function dismissExtras() {
+    closeCoffee();
+    closeTip();
+    clearFlyby();
+  }
+
+  function callCrew() {
+    closeActions(true);
+    dismissExtras();
+    clearReaction();
+    react("wave");
+    status.textContent = "Bit called in three tiny builders.";
+    flyby.hidden = false;
+    const animated = canFly();
+    if (animated) flybyMotion = createTimeline({ autoplay: false, onComplete: clearFlyby });
+    const squad = [[-118, -48], [-158, -6], [-111, 34]];
+    const origin = companion.offsetWidth * .32;
+    squad.forEach(([x, drift], index) => {
+      const builder = document.createElement("span");
+      builder.className = "flyby-member";
+      builder.append(bitTemplate.content.cloneNode(true));
+      flyby.append(builder);
+      const angleY = Math.min(window.innerHeight - y - 47, Math.max(header.offsetHeight - y, drift));
+      if (!animated) {
+        builder.style.transform = `translate(${x}px, ${angleY}px)`;
+        builder.style.opacity = "1";
+        return;
+      }
+      const delay = index * 88;
+      flybyMotion.add(builder, {
+        x: [origin, x], y: [origin, angleY], rotate: [20, -13],
+        opacity: [0, 1], duration: 510, ease: glide
+      }, delay);
+      flybyMotion.add(builder, { y: [angleY, angleY - 5, angleY], rotate: [-13, 3, 0], duration: 270, ease: "inOutSine" }, delay + 510);
+      flybyMotion.add(builder, {
+        x: [x, x - 55], y: [angleY, angleY - 28], rotate: [0, -16],
+        opacity: [1, 0], duration: 340, ease: glide
+      }, delay + 780);
+    });
+    if (animated) flybyMotion.play();
+    else flybyTimer = setTimeout(clearFlyby, 2200);
+  }
+
+  const tips = {
+    "klove-kicks": "Looking for a particular pair? Try browsing the store by brand.",
+    stipple: "Try a repo you know. Switch to the language view and see how its files group together.",
+    infinity: "Try one of the event filters, then follow the season timeline.",
+    activity: "Tap a bar in Hackathon outcomes to open the events it counts.",
+    contact: "Use Copy email if you want to save or share Pranshu’s address."
+  };
+  function showTip() {
+    closeActions(true);
+    dismissExtras();
+    clearReaction();
+    react("inspect");
+    tipText.textContent = tips[currentStop.id] ?? "Quick jump in the terminal can take you straight to any project or section.";
+    tip.hidden = false;
+    fitPanel(tip);
+    tipClose.focus({ preventScroll: true });
+  }
+
   function canOfferCoffee() {
     return state === "rest" && !sleeping && !companion.hidden && !document.hidden && actions.hidden &&
-      !document.body.hasAttribute("data-bit-tour-active");
+      tip.hidden && flyby.hidden && !document.body.hasAttribute("data-bit-tour-active");
   }
 
   function visitorIsBusy() {
@@ -295,14 +381,17 @@
 
   document.body.dataset.companionReady = "";
   if (reduced.matches || lastScroll > 0) reveal();
-  document.addEventListener("bit-tour-start", closeCoffee);
-  document.addEventListener("quick-jump-open", closeCoffee);
+  document.addEventListener("bit-tour-start", dismissExtras);
+  document.addEventListener("quick-jump-open", dismissExtras);
 
   companion.addEventListener("toggle-bit", () => {
     reveal();
     toggleSleep();
   });
   sleepButton.addEventListener("click", toggleSleep);
+  crewButton.addEventListener("click", callCrew);
+  tipButton.addEventListener("click", showTip);
+  tipClose.addEventListener("click", () => { closeTip(); scheduleCoffee(); });
   coffeeButton.addEventListener("click", () => {
     closeActions(true);
     brewCoffee(true);
@@ -331,14 +420,14 @@
   document.addEventListener("pointerdown", event => {
     if (!companion.contains(event.target)) {
       closeActions();
-      closeCoffee();
+      dismissExtras();
       scheduleCoffee();
     }
   });
   document.addEventListener("keydown", event => {
     if (event.key === "Escape") {
       closeActions(companion.contains(document.activeElement));
-      closeCoffee();
+      dismissExtras();
       scheduleCoffee();
     }
   });
@@ -352,7 +441,7 @@
     if (!distance) return;
     lastScroll = position;
     closeActions(actions.contains(document.activeElement));
-    closeCoffee();
+    dismissExtras();
     reveal();
     if (!canFly()) {
       scheduleCoffee();
@@ -372,14 +461,16 @@
     else stopMotion();
     fitPanel(actions);
     fitPanel(coffeeNote);
+    fitPanel(tip);
   }, { passive: true });
   reduced.addEventListener("change", () => {
+    clearFlyby();
     if (!companion.hidden) stopMotion();
   });
   document.addEventListener("visibilitychange", () => {
     if (companion.hidden) return;
     stopMotion();
-    if (document.hidden) closeCoffee();
+    if (document.hidden) dismissExtras();
     else scheduleCoffee();
   });
 })();

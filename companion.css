@@ -70,6 +70,7 @@ body:has(.build-bit) .companion:not(:focus-within) { visibility: hidden; }
 
 .companion-panel {
   position: absolute;
+  z-index: 2;
   inset: calc(50% + var(--companion-panel-offset, 0px)) calc(100% + .25rem) auto auto;
   transform: translateY(-50%);
   box-shadow: 0 .35rem 1.2rem #231f1b33; /* taste-skill-ignore: disclosure floats over the reading area. */
@@ -78,6 +79,8 @@ body:has(.build-bit) .companion:not(:focus-within) { visibility: hidden; }
 
 .companion-actions {
   width: min(11.8rem, calc(100vw - 5rem));
+  max-height: calc(100dvh - var(--header-height) - 1.5rem);
+  overflow-y: auto;
   padding: .25rem;
   background: var(--graphite-deep);
   color: var(--cream);
@@ -106,20 +109,30 @@ body:has(.build-bit) .companion:not(:focus-within) { visibility: hidden; }
 }
 
 .companion-note p { font: 580 1.45rem/1.1 var(--display); }
+.companion-tip-copy { margin-top: .5rem; line-height: 1.4; }
 .companion-replies { display: flex; flex-wrap: wrap; align-items: center; gap: .25rem .6rem; margin-top: .45rem; }
 .companion-replies button { min-height: 2.75rem; padding: .35rem .6rem; border: 0; background: none; font-weight: 580; }
 .companion-replies [data-coffee-accept] { background: var(--accent); color: var(--cream); }
 .companion-replies button:hover { text-decoration: underline; }
 .companion-replies [data-coffee-accept]:hover { background: var(--graphite); }
 
+.companion-flyby { position: absolute; inset: 0; pointer-events: none; }
+.flyby-member { position: absolute; top: 0; left: 0; width: 2.9rem; opacity: 0; }
+.flyby-member:nth-child(2) { --mini-bit-color: #a5744e; }
+.flyby-member .mini-bit { transform: scaleX(-1); }
+.flyby-member .mini-bit-wake { opacity: .75; }
+
 @media (prefers-reduced-motion: no-preference) {
   .companion-standing, .companion-seated { transition: opacity 120ms ease; }
   .companion-trigger:active .companion-art { scale: .94; }
   .companion-panel:not([hidden]) { animation: companion-actions-in 180ms ease-out; }
+  :is(.build-bit, .flyby-member) .mini-bit-wake { animation: mini-bit-wake 480ms ease-in-out infinite alternate; }
   .companion-trigger .companion-art { transition: translate 240ms cubic-bezier(.22, 1, .36, 1); }
   .companion[data-state="rest"]:not([data-coffee], [data-reaction], [data-sleeping="true"]) .companion-trigger:is(:hover, :focus-visible) .companion-art { translate: 0 -5px; }
   .companion[data-state="rest"]:not([data-coffee], [data-reaction], [data-sleeping="true"]) .companion-trigger:is(:hover, :focus-visible) .companion-arm { animation: companion-wave 640ms ease-in-out both; }
 }
+
+@keyframes mini-bit-wake { from { opacity: .25; transform: translateX(2px); } to { opacity: .85; transform: translateX(-2px); } }
 
 .bit-flight-art { width: clamp(3.55rem, 5vw, 4.5rem); height: auto; }
 .bit-flight-art .companion-art { height: auto; }
@@ -246,6 +259,7 @@ body:has(.build-bit) .companion:not(:focus-within) { visibility: hidden; }
   }
 
   .companion { --companion-size: 3.55rem; }
+  .flyby-member { width: 2.4rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {

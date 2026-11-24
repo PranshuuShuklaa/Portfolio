@@ -328,11 +328,14 @@
           </g>
         </svg>
       </button>
+      <div class="companion-flyby" data-companion-flyby aria-hidden="true" hidden></div>
       <div class="companion-panel companion-actions" id="companion-actions" aria-label="Bit's actions" role="group" hidden>
         <a data-companion-project target="_blank" rel="noopener noreferrer" hidden></a>
         <a data-companion-next href="#work">See projects</a>
         <button type="button" data-companion-coffee>Coffee break</button>
         <button type="button" data-companion-spark>Cast a spark</button>
+        <button type="button" data-companion-crew>Call the crew</button>
+        <button type="button" data-companion-tip>Ask Bit for a tip</button>
         <button type="button" data-companion-toggle>Put Bit to sleep</button>
       </div>
       <div class="companion-panel companion-note" aria-labelledby="companion-question" role="group" hidden>
@@ -341,6 +344,11 @@
           <button type="button" data-coffee-accept>Yes, please</button>
           <button type="button" data-coffee-close>Maybe later</button>
         </div>
+      </div>
+      <div class="companion-panel companion-note companion-tip" aria-labelledby="companion-tip-title" aria-describedby="companion-tip-text" role="group" hidden>
+        <p id="companion-tip-title">Bit’s tip</p>
+        <div class="companion-tip-copy" id="companion-tip-text" data-companion-tip-copy></div>
+        <div class="companion-replies"><button type="button" data-companion-tip-close>Got it</button></div>
       </div>
       <span class="sr-only" data-companion-status role="status"></span>
     </div>
@@ -384,12 +392,20 @@
       </svg>
     </template>
 
-    <template id="cursor-template">
-      <span class="build-pointer" aria-hidden="true">
-        <svg viewBox="0 0 25 30" focusable="false">
-          <path d="M2 2 22.8 17.15 13.9 17.2 10.3 27.8 2 2Z"/>
-        </svg>
-      </span>
+    <template id="build-bit-template">
+      <svg class="mini-bit" viewBox="0 0 46 40" aria-hidden="true" focusable="false" stroke-linecap="round" stroke-linejoin="round">
+        <path class="mini-bit-wake" d="M2 21h4M1 26h2m4 8h4" fill="none" stroke="var(--cursor)" stroke-width="1.5"/>
+        <path d="M10 33 42 29" stroke="var(--cream)" stroke-width="4.2"/>
+        <path d="M10 33 42 29" stroke="var(--graphite)" stroke-width="2.1"/>
+        <path d="M13 29q-6-1-11 4l3 1-2 3q7-1 11-4z" fill="var(--accent)" stroke="var(--cream)" stroke-width="1.3"/>
+        <path d="M19 25h12v5l-3 2h-6l-3-2z" fill="var(--mini-bit-color, var(--accent))" stroke="var(--cream)" stroke-width="1.4"/>
+        <path d="M16 15h17l2 3v6l-3 3H17l-3-3v-6z" fill="var(--graphite-deep)" stroke="var(--cream)" stroke-width="1.4"/>
+        <path d="M18 20h13v3l-1 1H19l-1-1z" fill="var(--cream)"/>
+        <path d="M21 21h1.5m4.8 0h1.5" stroke="var(--graphite-deep)" stroke-width="1.35"/>
+        <path d="m15 16 7-11 4-2 8 14q-11-3-20 1l-2-1z" fill="var(--graphite)" stroke="var(--cream)" stroke-width="1.3"/>
+        <path d="m18 12 12-1 2 4-16 1z" fill="var(--mini-bit-color, var(--accent))"/>
+        <path d="m28 28 4 3 3-2" fill="none" stroke="var(--cream)" stroke-width="1.55"/>
+      </svg>
     </template>
   </body>
 </html>

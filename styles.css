@@ -27,8 +27,6 @@
   --cream: #fff3de;
   --quiet: #ded0bd;
   --cursor: #963d2b;
-  --cursor-alt: #322b25;
-  --cursor-edge: #fff3de;
   --gutter: clamp(1.2rem, 5vw, 5.6rem);
   --frame: 88rem;
   --header-height: 4.2rem;
@@ -233,8 +231,6 @@ h1, h2, h3, p, figure, dl, dd { margin: 0; }
 
 .terminal, .work-handoff, .contact {
   --cursor: #ffac84;
-  --cursor-alt: #fff3de;
-  --cursor-edge: #24211e;
   color-scheme: dark;
 }
 
@@ -623,6 +619,7 @@ figcaption { margin-top: .46rem; color: var(--muted); font-size: .91rem; }
 .socials a:hover { color: var(--quiet); }
 
 [data-build] { position: relative; }
+:is(h2, h3, p, #name span)[data-build-part="write"] { position: relative; z-index: 5; }
 [data-build-state="pending"] [data-build-part],
 [data-build-state="running"] [data-build-part] { opacity: 0; }
 #name[data-intro-placed] [data-build-part] { opacity: 1; }
@@ -633,17 +630,25 @@ figcaption { margin-top: .46rem; color: var(--muted); font-size: .91rem; }
 .name-intro-label { position: absolute; color: var(--graphite-deep); white-space: nowrap; }
 .name-intro-label span { clip-path: inset(0 100% 0 0); }
 .name-intro-scribe, .build-bit { position: absolute; top: 0; left: 0; opacity: 0; }
-.name-intro-scribe .companion-trail, .build-bit .companion-trail { opacity: .8; }
-.build-bit { z-index: 3; }
+.name-intro-scribe .companion-trail { opacity: .8; }
+.build-bit {
+  z-index: 3;
+  width: clamp(2.2rem, 3.65vw, 3.15rem);
+  transform-origin: top left;
+}
+.mini-bit { display: block; width: 100%; height: auto; }
+.build-bit .mini-bit { transform: translate(-51%, -76%); }
+.build-bit.is-alt { --mini-bit-color: #a5744e; }
 
 .build-overlay {
   position: absolute;
   z-index: 4;
   inset: 0;
+  overflow: clip;
   pointer-events: none;
 }
 
-.build-pointer, .build-ripple, .build-selection {
+.build-ripple, .build-selection {
   position: absolute;
   top: 0;
   left: 0;
@@ -653,23 +658,6 @@ figcaption { margin-top: .46rem; color: var(--muted); font-size: .91rem; }
 }
 
 .build-overlay .is-present { visibility: visible; }
-
-.build-pointer {
-  z-index: 2;
-  width: clamp(1.48rem, 2.7vw, 2.4rem);
-  transform-origin: 2px 2px;
-  color: var(--cursor);
-}
-
-.build-pointer.is-alt { color: var(--cursor-alt); }
-.build-pointer svg { display: block; width: 100%; height: auto; overflow: visible; }
-
-.build-pointer path {
-  fill: currentColor;
-  stroke: var(--cursor-edge);
-  stroke-width: 2;
-  stroke-linejoin: round;
-}
 
 .build-ripple {
   width: 1.12rem;
@@ -681,7 +669,16 @@ figcaption { margin-top: .46rem; color: var(--muted); font-size: .91rem; }
 .build-selection {
   border: 2px solid var(--cursor);
   background: color-mix(in srgb, var(--cursor) 12%, transparent);
+  border-radius: .18rem;
+  overflow: clip;
   transform-origin: center;
+}
+.build-seal {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: .25rem;
+  background: var(--cursor);
+  opacity: 0;
 }
 
 @media (hover: hover) and (pointer: fine) and (forced-colors: none) {

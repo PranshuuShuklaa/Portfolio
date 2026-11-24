@@ -1,6 +1,6 @@
 ---
 name: Pranshu Shukla Portfolio
-description: An editorial work index with signal traces and cursor-led assembly.
+description: An editorial work index with signal traces and miniature Bit builders.
 colors:
   paper: "#f0ece3"
   paper-dark: "#e5ddd0"
@@ -13,7 +13,6 @@ colors:
   cream: "#fff3de"
   quiet: "#ded0bd"
   cursor: "#963d2b"
-  cursor-alt: "#322b25"
 typography:
   display:
     fontFamily: "Baskervville, Georgia, serif"
@@ -76,9 +75,9 @@ A shared 88rem frame aligns the hero, projects, and profile. Each project uses o
 
 ## Components
 
-The terminal supports project and section commands, help, and keyboard history. Every project uses one screenshot or video. On arrival, Bit traces the name and the lettering slides into the hero. The cursor crew then assembles outlined placeholders and Bit helps position them. The real content appears as the crew flies away. The assembly replays on viewport re-entry from either direction. A reticle acts as the mouse cursor and becomes a diamond over actions. The circuit drawing pauses offscreen. Terminal responses, expanded entries, and project images have supporting motion.
+The terminal supports project and section commands, help, and keyboard history. Every project uses one screenshot or video. On arrival, Bit traces the name and the lettering slides into the hero. Miniature Bits fly in, draw text slots, place controls, and pull media frames into position. A short sweep marks completed frames and the content fades in as the crew leaves. The assembly replays on viewport re-entry from either direction. A reticle acts as the mouse cursor and becomes a diamond over actions. The circuit drawing pauses offscreen. Terminal responses, expanded entries, and project images have supporting motion.
 
-Bit uses the existing colors and travels in a small right margin. Bit sits on a broom while scrolling, jumps off after scrolling pauses, then settles with a short gesture. After a reading pause, Bit brews coffee and offers it once. The pet button opens project shortcuts and lets visitors brew another coffee, send a spark through nearby circuits, or put Bit to sleep. The terminal command `pet` toggles sleep. Reduced motion keeps Bit docked with the same controls.
+Bit uses the existing colors and travels in a small right margin. Bit sits on a broom while scrolling, jumps off after scrolling pauses, then settles with a short gesture. After a reading pause, Bit brews coffee and offers it once. The pet button opens project shortcuts, contextual tips, and a three-Bit flyby. Visitors can also brew another coffee, send a spark through nearby circuits, or put Bit to sleep. The terminal command `pet` toggles sleep. Reduced motion keeps Bit docked and shows the flyby crew in a static formation.
 
 At each project, Bit flies across the screen, gives a short explanation, and then hovers beside the live project link. Bit flies back to the margin when scrolling resumes. The contact stop offers a short invitation to email. Outbound web links open in new tabs. With reduced motion, the guides appear without flight.
 

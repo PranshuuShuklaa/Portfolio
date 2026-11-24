@@ -17,13 +17,13 @@ Visitors can explore three real projects, find information about Pranshu, and re
 
 ## Direction contract
 
-**Thesis.** Let a portfolio terminal, authored typographic layout, and cursor assembly put the work first.
+**Thesis.** Let a portfolio terminal, authored typographic layout, and miniature Bit builders put the work first.
 
 **First viewport.** A large name on warm paper and a working graphite terminal share the opening with a pointer-reactive circuit drawing. The project visuals start in Selected Work.
 
 **Work.** Klove Kicks and Infinity get one screenshot each. Stipple gets one video.
 
-**Motion.** Larger cursor arrows trace, grip, and release with visible confirmation at each corner. Replay the build after a section leaves the viewport and returns. Keep the scroll-bound zoom and flat color wipe at Selected Work. The broom-riding pet banks in the direction of scroll, dismounts at a pause, and stays quiet while visitors read. Support system reduced motion.
+**Motion.** Miniature Bits trace text slots, pull media frames into place, and fly off when the content appears. Replay the build after a section leaves the viewport and returns. Keep the scroll-bound zoom and flat color wipe at Selected Work. The broom-riding pet banks in the direction of scroll, offers tips, and can call the crew for a flyby. Support system reduced motion.
 
 **References.** [Louis Paquet](https://louispaquet.com/) and [Abdulkader Safi](https://abdulkadersafi.com/blog/i-redesigned-my-portfolio-from-tech-dashboard-to-editorial) informed the work-index structure. [Adrien Quéchon](https://www.adrienquechon.com/) informed the serif direction. [Goutam’s portfolio](https://portfolio-delta-five-luvcxne6a5.vercel.app/) informed the chapter transition. The motion references include the [Anime.js v4 easing visualizer](https://codepen.io/juliangarnier/pen/gbOqbVR) and [Circuits Animated](https://codepen.io/rafahell/pen/wWGQyB). The drawing and the cursor symbols use original geometry.
 

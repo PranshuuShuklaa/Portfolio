@@ -25,4 +25,4 @@ Give visitors from Pranshu’s social profiles a way to explore his projects, le
 
 ## Brand commitments
 
-Use warm paper, graphite, and brick red. Keep project assembly visible in both directions of scroll and use a matching mouse cursor on fine-pointer devices. The opening uses a reactive circuit drawing, and Selected Work uses a scroll-controlled zoom and flat color wipe. The page supports reduced motion and works with ordinary navigation.
+Use warm paper, graphite, and brick red. Miniature Bits assemble projects as visitors scroll in either direction. Fine-pointer devices use a matching mouse cursor. The opening uses a reactive circuit drawing, and Selected Work uses a scroll-controlled zoom and flat color wipe. The page supports reduced motion and works with ordinary navigation.
