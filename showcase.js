@@ -54,6 +54,7 @@
   const form = document.querySelector("[data-terminal-form]");
   const input = document.querySelector("#terminal-command");
   const log = document.querySelector("[data-terminal-log]");
+  const companion = document.querySelector("[data-companion]");
   const history = [];
   let historyIndex = 0;
   let draft = "";
@@ -100,9 +101,12 @@
       appendLine(command, `Opening ${label}.`);
       location.hash = id;
     } else if (key === "help") {
-      appendLine(command, "ls · work · klove · stipple · infinity · about · activity · contact · clear");
+      appendLine(command, "ls · work · klove · stipple · infinity · about · activity · contact · pet · clear");
     } else if (key === "ls") {
       appendLine(command, "Klove Kicks · Stipple · Infinity");
+    } else if (key === "pet" && companion) {
+      companion.dispatchEvent(new Event("toggle-bit"));
+      appendLine(command, companion.dataset.sleeping === "true" ? "Bit is asleep." : "Bit is awake.");
     } else if (key === "clear") {
       log.replaceChildren();
     } else {

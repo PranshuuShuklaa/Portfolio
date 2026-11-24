@@ -25,4 +25,4 @@ Give visitors from Pranshu’s social profiles a way to explore his projects, le
 
 ## Brand commitments
 
-Use paper, forest green, and muted burgundy. Keep project assembly visible in both directions of scroll. The intro uses an original orbital drawing, and the work intro uses a scroll-controlled zoom and flat color wipe. The page supports reduced motion and works with ordinary navigation.
+Use warm paper, graphite, and brick red. Keep project assembly visible in both directions of scroll and use a matching mouse cursor on fine-pointer devices. The opening uses a reactive circuit drawing, and Selected Work uses a scroll-controlled zoom and flat color wipe. The page supports reduced motion and works with ordinary navigation.

@@ -6,7 +6,9 @@ related_targets:
   - "styles.css"
   - "intro.js"
   - "showcase.js"
-  - "orbit.js"
+  - "circuit.js"
+  - "companion.js"
+  - "companion.css"
 ---
 
 # Portfolio homepage
@@ -17,12 +19,12 @@ Visitors can explore three real projects, find information about Pranshu, and re
 
 **Thesis.** Let a portfolio terminal, authored typographic layout, and cursor assembly put the work first.
 
-**First viewport.** A large name on paper, a working terminal, and a single subtle orbital form that follows the pointer. The project visuals start in Selected Work.
+**First viewport.** A large name on warm paper and a working graphite terminal share the opening with a pointer-reactive circuit drawing. The project visuals start in Selected Work.
 
 **Work.** Klove Kicks and Infinity get one screenshot each. Stipple gets one video.
 
-**Motion.** Replay the cursor build after a section leaves the viewport and returns. Use a distinct scroll-bound zoom and flat color wipe at Selected Work. Keep every action usable and support system reduced motion.
+**Motion.** Larger cursor arrows trace, grip, and release with visible confirmation at each corner. Replay the build after a section leaves the viewport and returns. Keep the scroll-bound zoom and flat color wipe at Selected Work. The broom-riding pet banks in the direction of scroll, dismounts at a pause, and stays quiet while visitors read. Support system reduced motion.
 
-**References.** [Louis Paquet](https://louispaquet.com/) and [Abdulkader Safi](https://abdulkadersafi.com/blog/i-redesigned-my-portfolio-from-tech-dashboard-to-editorial) informed the work-index structure. [Adrien Quéchon](https://www.adrienquechon.com/) informed the serif and single-form art direction. [SLX Management](https://slxmanagement.com/fr) informed the orbital response, and [Goutam’s portfolio](https://portfolio-delta-five-luvcxne6a5.vercel.app/) informed the chapter transition. Cursor timing takes cues from the [Anime.js v4 easing visualizer](https://codepen.io/juliangarnier/pen/gbOqbVR). The implementation uses original shapes and code.
+**References.** [Louis Paquet](https://louispaquet.com/) and [Abdulkader Safi](https://abdulkadersafi.com/blog/i-redesigned-my-portfolio-from-tech-dashboard-to-editorial) informed the work-index structure. [Adrien Quéchon](https://www.adrienquechon.com/) informed the serif direction. [Goutam’s portfolio](https://portfolio-delta-five-luvcxne6a5.vercel.app/) informed the chapter transition. The motion references include the [Anime.js v4 easing visualizer](https://codepen.io/juliangarnier/pen/gbOqbVR) and [Circuits Animated](https://codepen.io/rafahell/pen/wWGQyB). The drawing and the cursor symbols use original geometry.
 
-**Finish.** Check both scroll directions, chapter scrubbing, terminal commands, project media, contact links, and responsive layouts. Check reduced motion and the static fallback.
+**Finish.** Check both scroll directions, chapter scrubbing, terminal commands, project media, contact links, and responsive layouts. Check the pet's landing, reversed flight, and controls with touch and keyboard. Check reduced motion and the static fallback.

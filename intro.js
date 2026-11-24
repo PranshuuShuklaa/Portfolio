@@ -8,9 +8,9 @@
   const compact = window.matchMedia("(max-width: 42rem)");
   const { createTimeline, cubicBezier } = window.anime ?? {};
   const supported = Boolean(createTimeline && cubicBezier && pointerTemplate);
-  const landing = supported ? cubicBezier(.2, .78, .25, 1) : "linear";
-  const travelY = supported ? cubicBezier(.42, .08, .34, 1) : "linear";
-  const pulling = supported ? cubicBezier(.55, .08, .26, 1) : "linear";
+  const landing = supported ? cubicBezier(.23, .62, .24, 1) : "linear";
+  const pulling = supported ? cubicBezier(.43, .06, .23, 1) : "linear";
+  const releaseEase = supported ? cubicBezier(.3, .12, .66, 1) : "linear";
   const scenes = [...document.querySelectorAll("[data-build]")].map(element => ({
     element,
     parts: [...element.querySelectorAll("[data-build-part]")],
@@ -132,10 +132,11 @@
   function approach(timeline, cursor, start, destination, time, duration) {
     timeline.call(() => cursor.classList.add("is-present"), time);
     timeline.add(cursor, {
-      x: { from: start.x, to: destination.x, ease: landing },
-      y: { from: start.y, to: destination.y, ease: travelY },
-      opacity: { from: 0, to: 1, duration: 120 },
-      duration
+      x: [start.x, destination.x],
+      y: [start.y, destination.y],
+      opacity: { from: 0, to: 1, duration: 150 },
+      duration,
+      ease: landing
     }, time);
   }
 
@@ -145,24 +146,24 @@
 
   function depart(timeline, cursor, point, direction, time) {
     timeline.add(cursor, {
-      x: [point.x, point.x + direction * 45],
-      y: [point.y, point.y - 23],
+      x: [point.x, point.x + direction * 54],
+      y: [point.y, point.y - 29],
       opacity: [1, 0],
-      duration: 190,
-      ease: travelY
+      duration: 230,
+      ease: releaseEase
     }, time);
   }
 
   function ripple(timeline, overlay, point, time) {
     const ring = document.createElement("span");
     ring.className = "build-ripple";
-    place(ring, point.x - 7, point.y - 7);
+    place(ring, point.x - 9, point.y - 9);
     overlay.append(ring);
     timeline.call(() => ring.classList.add("is-present"), time);
     timeline.add(ring, {
-      opacity: [{ from: 0, to: .87, duration: 45 }, { to: 0, duration: 190 }],
-      scale: [.45, 1.65],
-      duration: 235,
+      opacity: [{ from: 0, to: .94, duration: 55 }, { to: 0, duration: 220 }],
+      scale: [.42, 1.7],
+      duration: 275,
       ease: landing
     }, time);
   }
@@ -181,12 +182,12 @@
     const cursor = pointer(overlay, index % 2 === 1);
     const first = point(box, 0, 1);
     const last = point(box, 1, 1);
-    const start = { x: first.x - (compact.matches ? 35 : 73), y: first.y + 28 * direction };
-    const contact = time + 245;
-    const draw = Math.min(470, 245 + box.width * .31);
-    const guide = selection(overlay, { ...box, top: first.y + 1, height: 1 });
+    const start = { x: first.x - (compact.matches ? 48 : 86), y: first.y + 37 * direction };
+    const contact = time + 305;
+    const draw = Math.min(520, 285 + box.width * .34);
+    const guide = selection(overlay, { ...box, top: first.y + 1, height: 2 }, "build-selection build-trace");
     guide.style.transformOrigin = "left center";
-    approach(timeline, cursor, start, first, time, 245);
+    approach(timeline, cursor, start, first, time, 305);
     ripple(timeline, overlay, first, contact);
     timeline.call(() => guide.classList.add("is-present"), contact);
     timeline.add(element, {
@@ -195,10 +196,10 @@
       ease: pulling, duration: draw
     }, contact);
     timeline.add(guide, {
-      opacity: [{ from: 0, to: .7, duration: 50 }, { to: .7, duration: Math.max(1, draw - 50) }],
+      opacity: [{ from: 0, to: .83, duration: 65 }, { to: .83, duration: draw - 65 }],
       scaleX: [0, 1], duration: draw, ease: pulling
     }, contact);
-    timeline.add(guide, { opacity: [.7, 0], duration: 125 }, contact + draw);
+    timeline.add(guide, { opacity: [.83, 0], duration: 175 }, contact + draw);
     chase(timeline, cursor, first, last, contact, draw);
     depart(timeline, cursor, last, 1, contact + draw);
   }
@@ -207,17 +208,17 @@
     const cursor = pointer(overlay, index % 2 === 1);
     const spot = point(box, compact.matches ? .72 : .85, .56);
     const start = { x: spot.x + 66, y: spot.y + 53 * direction };
-    const contact = time + 290;
-    approach(timeline, cursor, start, spot, time, 290);
+    const contact = time + 330;
+    approach(timeline, cursor, start, spot, time, 330);
     ripple(timeline, overlay, spot, contact);
-    timeline.add(element, { opacity: [0, 1], y: [9, 0], ease: landing, duration: 275 }, contact);
-    timeline.add(cursor, { scale: [1, .8, 1], duration: 130, ease: travelY }, contact);
+    timeline.add(element, { opacity: [.42, 1], y: [9, 0], ease: landing, duration: 300 }, contact);
+    timeline.add(cursor, { scale: [1, .81, 1], duration: 155, ease: landing }, contact);
     depart(timeline, cursor, spot, 1, contact + 145);
   }
 
   function drag(timeline, overlay, element, box, time, index, crew) {
-    const opening = time + 310;
-    const duration = 540;
+    const opening = time + 370;
+    const duration = 680;
     const release = opening + duration;
     const outline = selection(overlay, box);
     const corners = crew ? [[0, 0], [1, 1], [1, 0], [0, 1]] : [[0, 0], [1, 1]];
@@ -225,35 +226,36 @@
     if (crew) {
       const footprint = selection(overlay, box, "build-footprint");
       timeline.call(() => footprint.classList.add("is-present"), time);
-      timeline.add(footprint, { opacity: [0, .38], duration: 145, ease: landing }, time);
-      timeline.add(footprint, { opacity: [.38, 0], duration: duration + 120, ease: pulling }, opening);
+      timeline.add(footprint, { opacity: [0, .62], duration: 190, ease: landing }, time);
+      timeline.add(footprint, { opacity: [.62, 0], duration: duration + 145, ease: pulling }, opening);
     }
 
     corners.forEach(([x, y], cornerIndex) => {
       const cursor = pointer(overlay, (index + cornerIndex) % 2 === 1);
       const grab = point(box, x ? .57 : .43, y ? .62 : .38);
       const corner = point(box, x, y);
-      const start = { x: corner.x + (x ? 92 : -92), y: corner.y + (y ? 75 : -75) };
-      const delay = cornerIndex * 29;
-      approach(timeline, cursor, start, grab, time + delay, 310 - delay);
+      const start = { x: corner.x + (x ? 120 : -120), y: corner.y + (y ? 88 : -88) };
+      const delay = cornerIndex * 32;
+      approach(timeline, cursor, start, grab, time + delay, 370 - delay);
       ripple(timeline, overlay, grab, opening);
       chase(timeline, cursor, grab, corner, opening, duration);
-      depart(timeline, cursor, corner, x ? 1 : -1, release);
+      ripple(timeline, overlay, corner, release);
+      depart(timeline, cursor, corner, x ? 1 : -1, release + 65);
     });
 
     timeline.call(() => outline.classList.add("is-present"), opening);
     timeline.add(element, {
-      opacity: { from: .65, to: 1, duration: 185 },
+      opacity: { from: .79, to: 1, duration: 195 },
       clipPath: ["inset(38% 43% 38% 43%)", "inset(0% 0% 0% 0%)"],
       duration, ease: pulling
     }, opening);
     timeline.add(outline, {
-      opacity: { from: 0, to: .64, duration: 120 },
+      opacity: { from: 0, to: .9, duration: 130 },
       scaleX: [.14, 1],
       scaleY: [.24, 1],
       duration, ease: pulling
     }, opening);
-    timeline.add(outline, { opacity: [.64, 0], duration: 160 }, release);
+    timeline.add(outline, { opacity: [.9, 0], duration: 235 }, release);
   }
 
   const moves = { write, drop, drag };
@@ -282,7 +284,7 @@
         }
       });
       scene.timeline = timeline;
-      const gap = compact.matches ? 82 : 110;
+      const gap = compact.matches ? 74 : 100;
       const delay = scene.element.dataset.build === "hero" ? 65 : 0;
       const crew = scene.element.hasAttribute("data-crew");
       const sequence = crew

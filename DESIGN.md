@@ -1,19 +1,19 @@
 ---
 name: Pranshu Shukla Portfolio
-description: An editorial work index with moving ink and cursor-led assembly.
+description: An editorial work index with signal traces and cursor-led assembly.
 colors:
-  paper: "#f3f1e9"
-  paper-dark: "#e7e5da"
-  ink: "#25241f"
-  muted: "#514d42"
-  rule: "#a9a595"
-  pine: "#203b31"
-  pine-deep: "#192e26"
-  wine: "#603742"
-  white: "#faf6e8"
-  green-light: "#c5d4be"
-  cursor: "#64434a"
-  cursor-alt: "#355d47"
+  paper: "#f0ece3"
+  paper-dark: "#e5ddd0"
+  ink: "#231f1b"
+  muted: "#554940"
+  rule: "#b8aa98"
+  graphite: "#322b25"
+  graphite-deep: "#24211e"
+  accent: "#963d2b"
+  cream: "#fff3de"
+  quiet: "#ded0bd"
+  cursor: "#963d2b"
+  cursor-alt: "#322b25"
 typography:
   display:
     fontFamily: "Baskervville, Georgia, serif"
@@ -44,27 +44,27 @@ spacing:
   section: "clamp(2.1rem, 4.7vw, 4.75rem)"
 components:
   action:
-    backgroundColor: "{colors.pine}"
-    textColor: "{colors.white}"
+    backgroundColor: "{colors.accent}"
+    textColor: "{colors.cream}"
     rounded: "{rounded.square}"
   terminal:
-    backgroundColor: "{colors.pine-deep}"
-    textColor: "{colors.white}"
+    backgroundColor: "{colors.graphite-deep}"
+    textColor: "{colors.cream}"
     rounded: "{rounded.square}"
   work-index:
-    backgroundColor: "{colors.pine}"
-    textColor: "{colors.white}"
+    backgroundColor: "{colors.graphite}"
+    textColor: "{colors.cream}"
 ---
 
 # Design System
 
 ## Overview
 
-A large serif name and a portfolio terminal share the opening. A single pointer-reactive orbital drawing gives the introduction movement. Selected Work has a short scroll-controlled chapter transition before the three projects.
+A large serif name and a portfolio terminal share the opening. Signals travel along a circuit drawing that reacts to the pointer. Selected Work has a short scroll-controlled chapter transition before the three projects.
 
 ## Colors
 
-Paper is the main surface. Forest green anchors the terminal, work opener, and contact. Burgundy marks links, cursor motion, and the work opener’s flat color wipe.
+Warm paper is the main surface. Graphite anchors the terminal, work opener, and contact. Brick red marks actions, circuit signals, and the work opener’s flat color wipe.
 
 ## Typography
 
@@ -76,4 +76,8 @@ A shared 88rem frame aligns the hero, projects, and profile. Each project uses o
 
 ## Components
 
-The terminal supports project and section commands, help, and keyboard history. Every project uses one screenshot or video. Cursor scenes rearm when their section has left the viewport, then play on re-entry from either direction. Offscreen orbital drawing pauses. The contact list shows Instagram once as a simple text link.
+The terminal supports project and section commands, help, and keyboard history. Every project uses one screenshot or video. Larger cursor arrows draw the text and pull open the media frame, then replay on viewport re-entry from either direction. A reticle acts as the mouse cursor and becomes a diamond over actions. The circuit drawing pauses offscreen. Terminal responses, expanded entries, and project images have supporting motion.
+
+Bit uses the existing colors and travels in a small right margin. Bit sits on a broom while scrolling, jumps off after scrolling pauses, then settles with a short gesture. After a reading pause, Bit brews coffee and offers it once. The pet button opens project shortcuts and lets visitors brew another coffee, send a spark through nearby circuits, or put Bit to sleep. The terminal command `pet` toggles sleep. Reduced motion keeps Bit docked with the same controls.
+
+The circuit drawing continues through the project, profile, activity, and contact backgrounds. Short ripple rings mark the line junctions. Signals pause offscreen, and a spark from Bit sends brighter signals along neighboring traces.

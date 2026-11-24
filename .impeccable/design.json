@@ -12,13 +12,13 @@
         "role": "neutral",
         "displayName": "Ink"
       },
-      "pine": {
-        "role": "primary",
-        "displayName": "Forest"
+      "graphite": {
+        "role": "neutral",
+        "displayName": "Graphite"
       },
-      "wine": {
+      "accent": {
         "role": "primary",
-        "displayName": "Burgundy"
+        "displayName": "Brick red"
       }
     },
     "typographyMeta": {
@@ -36,8 +36,8 @@
     "motion": [
       {
         "name": "cursor-drag",
-        "value": "540ms",
-        "purpose": "Four cursors pull open a project figure."
+        "value": "680ms",
+        "purpose": "Four larger cursors pull open a project figure before a visible release."
       },
       {
         "name": "work-zoom",
@@ -45,7 +45,7 @@
         "purpose": "Scroll position drives the work title zoom and flat color wipe."
       },
       {
-        "name": "orbit-redraw",
+        "name": "circuit-redraw",
         "value": "30ms minimum",
         "purpose": "Bounds the interactive canvas refresh rate."
       }
@@ -72,15 +72,15 @@
       "refersTo": "action",
       "description": "Opens the project index.",
       "html": "<a class=\"ds-action\" href=\"#work\">Explore my work</a>",
-      "css": ".ds-action { display:inline-flex; align-items:center; min-height:2.95rem; padding:.45rem .9rem; background:#203b31; color:#faf6e8; font-weight:550; text-decoration:none; }"
+      "css": ".ds-action { display:inline-flex; align-items:center; min-height:2.95rem; padding:.45rem .9rem; background:#963d2b; color:#fff3de; font-weight:550; text-decoration:none; }"
     }
   ],
   "narrative": {
     "northStar": "An index the visitor can operate",
     "overview": "The opening pairs editorial type with a functional terminal. Visitors can follow one visual per project as the cursor crew assembles the page.",
     "keyCharacteristics": [
-      "Paper, forest green, and burgundy.",
-      "A single reactive orbital drawing.",
+      "Warm paper, graphite, and brick red.",
+      "A pointer-reactive circuit drawing and a matching mouse reticle.",
       "A reversible chapter transition and cursor replay on viewport re-entry."
     ],
     "rules": [],
