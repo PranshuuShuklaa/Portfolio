@@ -63,6 +63,7 @@
     ["klove", ["klove-kicks", "Klove Kicks"]],
     ["stipple", ["stipple", "Stipple"]],
     ["infinity", ["infinity", "Infinity"]],
+    ["wreckage", ["wreckage", "Wreckage"]],
     ["about", ["about", "About me"]],
     ["activity", ["activity", "Outside class"]],
     ["contact", ["contact", "Contact"]]
@@ -164,9 +165,9 @@
       appendLine(command, `Opening ${label}.`);
       location.hash = id;
     } else if (key === "help") {
-      appendLine(command, "ls · work · klove · stipple · infinity · about · activity · contact · pet · clear");
+      appendLine(command, `ls · ${[...destinations.keys()].join(" · ")} · pet · clear`);
     } else if (key === "ls") {
-      appendLine(command, "Klove Kicks · Stipple · Infinity");
+      appendLine(command, [...destinations.values()].filter(([id]) => document.getElementById(id).matches(".project")).map(([, label]) => label).join(" · "));
     } else if (key === "pet" && companion) {
       companion.dispatchEvent(new Event("toggle-bit"));
       appendLine(command, companion.dataset.sleeping === "true" ? "Bit is asleep." : "Bit is awake.");

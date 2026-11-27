@@ -16,6 +16,8 @@
   const scenes = [...document.querySelectorAll("[data-build]")].map(element => ({
     element,
     parts: [...element.querySelectorAll("[data-build-part]")],
+    completed: new Set(),
+    active: [],
     state: "built",
     timeline: null,
     overlay: null
@@ -25,28 +27,33 @@
   let lastScroll = window.scrollY;
   let direction = 1;
   let nameIntro;
+  let ready = false;
+  let hasScrolled = false;
 
   function canPlay() {
     return supported && !reduced.matches;
   }
 
-  function finish(scene) {
+  function finish(scene, settle = false) {
     scene.state = "built";
     scene.element.dataset.buildState = "built";
     const timeline = scene.timeline;
     scene.timeline = null;
     if (timeline) timeline.revert();
+    for (const part of settle ? scene.parts : scene.active) scene.completed.add(part);
+    for (const part of scene.active) delete part.dataset.partBuilding;
+    scene.active = [];
     scene.overlay?.remove();
     scene.overlay = null;
-    if (scene.element.dataset.build === "hero") delete name.dataset.introPlaced;
   }
 
   function settleAll() {
-    scenes.forEach(finish);
+    scenes.forEach(scene => finish(scene, true));
   }
 
   function arm(scene) {
     if (scene.state === "running") finish(scene);
+    scene.completed.clear();
     scene.state = "pending";
     scene.element.dataset.buildState = "pending";
   }
@@ -76,10 +83,13 @@
     queued = false;
     const top = Math.max(0, header.getBoundingClientRect().bottom);
     const bottom = window.innerHeight;
-    if (window.scrollY !== lastScroll) direction = window.scrollY > lastScroll ? 1 : -1;
-    lastScroll = window.scrollY;
+    if (window.scrollY !== lastScroll) {
+      direction = window.scrollY > lastScroll ? 1 : -1;
+      lastScroll = window.scrollY;
+    }
+    hasScrolled ||= lastScroll > 0;
     updateLocation(top);
-    if (!canPlay() || nameIntro) return;
+    if (!ready || document.hidden || !canPlay() || nameIntro) return;
 
     const positions = scenes.map(scene => ({
       scene, rect: scene.element.getBoundingClientRect()
@@ -88,24 +98,39 @@
     let hasMore = false;
     for (const { scene, rect } of positions) {
       const isHeader = scene.element.dataset.build === "header";
+      const isOpening = isHeader || scene.element.dataset.build === "hero";
       const hasFocus = scene.element.contains(document.activeElement) && document.activeElement.matches(":focus-visible");
       const outside = rect.bottom < top - 46 || rect.top > bottom + 46;
-      const enters = rect.bottom > top + Math.min(20, rect.height * .2) &&
-        rect.top < bottom - Math.min(20, rect.height * .2);
+      const intersection = Math.min(rect.bottom, bottom) - Math.max(rect.top, top);
+      const threshold = Math.min(rect.height * .65, (bottom - top) * .24, 160);
+      const enters = intersection >= threshold && threshold > 0;
 
       if (!isHeader && outside && !hasFocus) {
         if (scene.state !== "pending") arm(scene);
-      } else if (scene.state === "pending" && (isHeader || enters)) {
-        if (hasFocus) {
-          finish(scene);
-          continue;
+        continue;
+      }
+      if (!isOpening && !hasScrolled) continue;
+
+      const ceiling = isHeader ? 0 : top;
+      const parts = scene.parts.map(element => ({ element, bounds: element.getBoundingClientRect() }));
+      const visibleHeight = bounds => Math.min(bounds.bottom, bottom) - Math.max(bounds.top, ceiling);
+      if (scene.active.length && parts.some(({ element, bounds }) => scene.active.includes(element) && visibleHeight(bounds) <= 0)) finish(scene);
+      if (!isHeader && !hasFocus) {
+        for (const { element, bounds } of parts) {
+          if (bounds.bottom < ceiling - 46 || bounds.top > bottom + 46) scene.completed.delete(element);
         }
-        if (started) {
-          hasMore = true;
-        } else {
-          play(scene, rect, direction);
-          started = true;
-        }
+      }
+      if (scene.state === "running" || (!isHeader && !enters)) continue;
+      const eligible = parts.filter(({ element, bounds }) => {
+        const required = Math.min(bounds.height * .65, (bottom - ceiling) * .55);
+        return !scene.completed.has(element) && required > 0 && visibleHeight(bounds) >= required;
+      });
+      if (!eligible.length) continue;
+      if (hasFocus) finish(scene, true);
+      else if (started) hasMore = true;
+      else {
+        play(scene, rect, eligible, direction);
+        started = true;
       }
     }
     if (hasMore) schedule();
@@ -142,7 +167,10 @@
     timeline.cancel();
     layer.remove();
     delete document.body.dataset.nameIntro;
-    if (placed) name.dataset.introPlaced = "";
+    if (placed) {
+      const hero = scenes.find(scene => scene.element.contains(name));
+      for (const part of hero.parts) if (name.contains(part)) hero.completed.add(part);
+    }
     schedule();
   }
 
@@ -350,27 +378,29 @@
 
   const moves = { write, drop, drag };
 
-  function play(scene, sceneRect, direction) {
+  function play(scene, sceneRect, parts, direction) {
     const overlay = document.createElement("div");
     overlay.className = "build-overlay";
     overlay.setAttribute("aria-hidden", "true");
-    const geometry = scene.parts.filter(element => !element.closest("[data-intro-placed]")).map(element => {
-      const rect = element.getBoundingClientRect();
-      return {
-        element,
-        box: { left: rect.left - sceneRect.left, top: rect.top - sceneRect.top, width: rect.width, height: rect.height }
-      };
-    });
+    const geometry = parts.map(({ element, bounds }) => ({
+      element,
+      box: { left: bounds.left - sceneRect.left, top: bounds.top - sceneRect.top, width: bounds.width, height: bounds.height }
+    }));
 
     scene.state = "running";
     scene.element.dataset.buildState = "running";
+    scene.active = parts.map(({ element }) => element);
+    for (const element of scene.active) element.dataset.partBuilding = "";
     scene.overlay = overlay;
     scene.element.append(overlay);
     try {
       const timeline = createTimeline({
         autoplay: false,
         onComplete: () => {
-          if (scene.timeline === timeline) finish(scene);
+          if (scene.timeline === timeline) {
+            finish(scene);
+            schedule();
+          }
         }
       });
       scene.timeline = timeline;
@@ -391,6 +421,7 @@
   }
 
   reduced.addEventListener("change", () => {
+    if (!ready) return;
     finishNameIntro();
     if (reduced.matches) settleAll();
     else resetBuild();
@@ -404,7 +435,7 @@
     if (width !== layoutWidth) {
       finishNameIntro();
       layoutWidth = width;
-      scenes.filter(scene => scene.state === "running").forEach(finish);
+      scenes.filter(scene => scene.state === "running").forEach(scene => finish(scene));
     }
     schedule();
   }, { passive: true });
@@ -413,24 +444,30 @@
     finishNameIntro();
     const parent = event.target.closest("[data-build]");
     const scene = scenes.find(candidate => candidate.element === parent);
-    if (scene && scene.state !== "built") finish(scene);
+    if (scene) finish(scene, true);
   });
 
   document.addEventListener("keydown", event => {
     if (event.key === "Escape") {
       finishNameIntro();
-      scenes.filter(scene => scene.state === "running").forEach(finish);
+      scenes.filter(scene => scene.state === "running").forEach(scene => finish(scene));
     }
   });
 
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) {
       finishNameIntro();
-      scenes.filter(scene => scene.state === "running").forEach(finish);
+      scenes.filter(scene => scene.state === "running").forEach(scene => finish(scene));
     }
     else schedule();
   });
 
-  resetBuild();
-  introduceName();
+  function start() {
+    ready = true;
+    resetBuild();
+    introduceName();
+  }
+
+  if (document.readyState === "complete") start();
+  else window.addEventListener("load", start, { once: true });
 })();

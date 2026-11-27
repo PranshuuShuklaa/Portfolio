@@ -15,6 +15,7 @@
     ["klove-kicks", "Klove Kicks is a sneaker shop Pranshu built end to end, from the storefront to the backend.", "Want to browse the store?"],
     ["stipple", "Stipple turns public GitHub repos into interactive maps. Every dot is a file.", "Want to try it on a repo?"],
     ["infinity", "Infinity is a tech society site demo. Scroll through its opening, then explore the events and meet the team.", "Want to try the demo?"],
+    ["wreckage", "Wreckage gives webpages gravity. Drop and toss their pieces, then press Esc to put everything back.", "Want to try it in Chrome?"],
     ["contact", "An online shop, a web app, or an idea scribbled on a napkin? Pranshu’s up for building it. Broom mail and regular email both welcome."]
   ].map(([id, summary, invitation]) => {
     const section = document.getElementById(id);
@@ -174,7 +175,7 @@
         queue(130);
         return;
       }
-      if (document.hidden || document.body.hasAttribute("data-name-intro") || companion.dataset.sleeping === "true" || document.querySelector(".quick-jump[open]")) return;
+      if (document.readyState !== "complete" || document.hidden || document.body.hasAttribute("data-name-intro") || companion.dataset.sleeping === "true" || document.querySelector(".quick-jump[open]")) return;
       if (companion.contains(document.activeElement) || !companion.querySelector(".companion-actions").hidden) return;
       if (window.getSelection()?.toString() || [...document.querySelectorAll("video")].some(video => !video.paused)) return;
       const candidate = readStop();
@@ -214,5 +215,6 @@
       }
     });
   }
-  queue(550);
+  if (document.readyState === "complete") queue(550);
+  else window.addEventListener("load", () => queue(550), { once: true });
 })();

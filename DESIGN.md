@@ -59,7 +59,7 @@ components:
 
 ## Overview
 
-A large serif name and a portfolio terminal share the opening. Signals travel along a circuit drawing that reacts to the pointer. Selected Work has a short scroll-controlled chapter transition before the three projects.
+A large serif name and a portfolio terminal share the opening. Signals travel along a circuit drawing that reacts to the pointer. Selected Work has a short scroll-controlled chapter transition before the four projects.
 
 ## Colors
 

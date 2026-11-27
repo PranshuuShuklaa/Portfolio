@@ -20,6 +20,7 @@ Give visitors from Pranshu’s social profiles a way to explore his projects, le
 - Klove Kicks is a live sneaker storefront built by Pranshu end to end. It has one screenshot.
 - Stipple visualizes public GitHub repositories. It has one walkthrough of its Express report.
 - Infinity is a tech society website demo. It has one screenshot.
+- Wreckage is a Chrome extension that gives webpage elements physics. It has one screenshot.
 - About and Activity cover SSCBS, Fault Labs AI, Kronos, Smart India Hackathon, Sanket, and hackCBS 9.0.
 - Contact includes email, Instagram, LinkedIn, and GitHub.
 

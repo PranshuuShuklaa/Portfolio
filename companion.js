@@ -314,6 +314,7 @@
     "klove-kicks": "Looking for a particular pair? Try browsing the store by brand.",
     stipple: "Try a repo you know. Switch to the language view and see how its files group together.",
     infinity: "Try one of the event filters, then follow the season timeline.",
+    wreckage: "Try Moon mode first, then drag the gravity dial sideways to pull pieces across the page.",
     activity: "Tap a bar in Hackathon outcomes to open the events it counts.",
     contact: "Use Copy email if you want to save or share Pranshu’s address."
   };

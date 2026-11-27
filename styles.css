@@ -409,9 +409,9 @@ h1, h2, h3, p, figure, dl, dd { margin: 0; }
 }
 
 .project:last-child { padding-bottom: 0; border-bottom: none; }
-.project-stipple { grid-template-columns: minmax(0, 1.21fr) minmax(0, .79fr); }
-.project-stipple .project-copy { grid-column: 2; grid-row: 1; }
-.project-stipple .project-figure { grid-column: 1; grid-row: 1; }
+.project-reversed { grid-template-columns: minmax(0, 1.21fr) minmax(0, .79fr); }
+.project-reversed .project-copy { grid-column: 2; grid-row: 1; }
+.project-reversed .project-figure { grid-column: 1; grid-row: 1; }
 .project-copy { max-width: 34rem; }
 
 .project-copy h3 {
@@ -620,9 +620,7 @@ figcaption { margin-top: .46rem; color: var(--muted); font-size: .91rem; }
 
 [data-build] { position: relative; }
 :is(h2, h3, p, #name span)[data-build-part="write"] { position: relative; z-index: 5; }
-[data-build-state="pending"] [data-build-part],
-[data-build-state="running"] [data-build-part] { opacity: 0; }
-#name[data-intro-placed] [data-build-part] { opacity: 1; }
+[data-part-building] { opacity: 0; }
 [data-name-intro] #name { opacity: 0; }
 
 .name-intro { position: fixed; z-index: 10; inset: 0; pointer-events: none; overflow: clip; }
@@ -761,7 +759,7 @@ figcaption { margin-top: .46rem; color: var(--muted); font-size: .91rem; }
   :root { --header-height: 3.55rem; --handoff-size: 8rem; --handoff-travel: 3.65rem; }
   .site-nav { font-size: .9rem; gap: .15rem .75rem; }
   .wordmark { font-size: 1.58rem; }
-  .hero, .project, .project-stipple, .about, .profile-columns, .activity { grid-template-columns: 1fr; }
+  .hero, .project, .project-reversed, .about, .profile-columns, .activity { grid-template-columns: 1fr; }
   .hero { padding-block: 1.75rem 1.55rem; }
   .hero h1 { font-size: clamp(4.15rem, 15.5vw, 6.1rem); }
   .hero-action { margin-top: .85rem; }
